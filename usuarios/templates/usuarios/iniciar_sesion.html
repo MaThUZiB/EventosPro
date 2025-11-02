@@ -1,0 +1,52 @@
+{% extends 'core.html' %}
+{% load static %}
+{% block content %}
+
+<section class="min-h-screen flex items-center justify-center bg-[#0F172A] text-gray-100">
+    <div class="bg-gray-900 rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-700">
+
+        <!-- Logo o título -->
+        <div class="text-center mb-6">
+            <!-- Aquí puedes poner tu logo más adelante -->
+            <!-- <img src="{% static 'ruta/a/tu/logo.png' %}" alt="Logo" class="w-16 mx-auto mb-3"> -->
+            <h1 class="text-3xl font-semibold">Bienvenido</h1>
+            <p class="text-gray-400 text-sm mt-1">Inicia sesión para continuar</p>
+        </div>
+
+        <!-- Mensajes de error -->
+        {% if error %}
+            <p class="text-red-500 text-sm mb-3">{{ error }}</p>
+        {% endif %}
+
+        <!-- Formulario -->
+        <form method="POST" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-300">Usuario o correo</label>
+                <input type="text" id="username" name="username" required
+                    value="{{ request.POST.username|default_if_none:'' }}"
+                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-300">Contraseña</label>
+                <input type="password" id="password" name="password" required
+                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <button type="submit"
+                class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition duration-200">
+                Iniciar sesión
+            </button>
+        </form>
+
+        <!-- Enlace a registro -->
+        <div class="mt-6 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-400">
+            <p>¿No tienes cuenta?</p>
+            <!-- Aquí puedes poner la URL al registro más adelante -->
+            <a href="{% url 'registrar_usuario' %}" class="mt-2 sm:mt-0 text-blue-400 hover:text-blue-300 font-medium">Crear cuenta</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
