@@ -1,0 +1,14 @@
+{% extends 'core.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-20 p-6 bg-gray-900 text-white rounded-xl shadow-md text-center">
+    <h2 class="text-2xl font-bold mb-4">Eliminar Evento</h2>
+    <p class="mb-6">¿Estás seguro de que deseas eliminar el evento <strong>{{ evento.nombre }}</strong>?</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-medium">Sí, eliminar</button>
+        <a href="{% url 'editar_evento' evento.id %}" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium ml-4">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

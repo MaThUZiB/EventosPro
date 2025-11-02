@@ -8,6 +8,9 @@ class Evento(models.Model):
     hora = models.TimeField()
     descripcion = models.TextField()
     ubicacion = models.CharField(max_length=200)
+    precio = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    stock = models.PositiveIntegerField(null=True, blank=True)
+    imagen = models.ImageField(upload_to='eventos/', null=True, blank=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -9,7 +9,7 @@ class Usuario(AbstractUser):
         ('administrador', 'Administrador'),
         ('cliente', 'Cliente'),
         ('organizador', 'Organizador'),
-    ])
+    ],)
 
     USERNAME_FIELD = 'username'  # indica que se usa 'username' para login
     REQUIRED_FIELDS = ['email', 'rut']  # campos obligatorios para createsuperuser

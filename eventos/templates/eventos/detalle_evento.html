@@ -1,0 +1,67 @@
+{% extends 'core.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto my-10 p-6 bg-gray-900 rounded-xl shadow-md">
+    <!-- Imagen del evento -->
+    {% if evento.imagen %}
+    <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}" class="w-full h-64 object-cover rounded-lg mb-6">
+    {% else %}
+    <div class="w-full h-64 bg-gray-800 flex items-center justify-center rounded-lg mb-6">
+        <span class="text-gray-400 text-xl">No hay imagen disponible</span>
+    </div>
+    {% endif %}
+
+    <!-- Nombre y detalles principales -->
+    <h1 class="text-3xl font-bold mb-2 text-white">{{ evento.nombre }}</h1>
+    <p class="text-gray-300 mb-4">
+        <span class="font-semibold text-gray-200">Fecha:</span> {{ evento.fecha|date:"d M Y" }} &nbsp;
+        <span class="font-semibold text-gray-200">Hora:</span> {{ evento.hora|time:"H:i" }}
+    </p>
+    <p class="text-gray-300 mb-4">
+        <span class="font-semibold text-gray-200">Ubicación:</span> {{ evento.ubicacion }}
+    </p>
+
+    <!-- Descripción -->
+    <div class="mb-4">
+        <h2 class="text-xl font-semibold mb-2 text-white">Descripción</h2>
+        <p class="text-gray-300">{{ evento.descripcion }}</p>
+    </div>
+
+    <!-- Precio y stock -->
+    <div class="flex items-center justify-between mt-6">
+        <div>
+            {% if evento.precio %}
+                <p class="text-lg font-bold text-green-500">Precio: ${{ evento.precio }}</p>
+            {% else %}
+                <p class="text-lg font-bold text-gray-300">Entrada gratuita</p>
+            {% endif %}
+        </div>
+        <div>
+            {% if evento.stock %}
+                <p class="text-gray-300">Disponibles: {{ evento.stock }}</p>
+            {% else %}
+                <p class="text-gray-400">Sin stock limitado</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="mt-6 flex gap-4">
+        <!-- Botón editar: solo visible para organizador -->
+        {% if request.user == evento.usuario %}
+            <a href="{% url 'editar_evento' evento.id %}" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white font-medium transition">
+                Editar
+            </a>
+        {% endif %}
+
+        <!-- Botón tickets: visible para todos -->
+        <a href=" " class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition">
+            Comprar Tickets
+        </a>
+    </div>
+
+    <!-- Usuario creador -->
+    <p class="mt-6 text-gray-400 text-sm">Organizado por: {{ evento.usuario.username }}</p>
+</div>
+{% endblock %}

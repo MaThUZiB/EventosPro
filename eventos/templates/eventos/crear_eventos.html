@@ -1,0 +1,35 @@
+{% extends 'core.html' %}
+{% load static %}
+{% load form_filters %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100 py-12">
+    <div class="bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-3xl border border-gray-700">
+
+        <h1 class="text-3xl font-bold mb-6 text-white text-center">Crear Nuevo Evento</h1>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-gray-200 font-medium mb-1">{{ field.label }}</label>
+                    {{ field|add_class:"w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+                    {% if field.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit"
+                class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition duration-200">
+                Crear Evento
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-gray-400">
+            <a href="{% url 'mis_eventos' %}" class="text-blue-400 hover:text-blue-300 font-medium">Volver a eventos</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

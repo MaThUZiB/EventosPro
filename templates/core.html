@@ -6,22 +6,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compra entradas y descubre los mejores eventos en tu ciudad con Eventos Pro.">
+    <meta name="theme-color" content="#0f172a">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <title>Eventos - Pro</title>
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+    <script src="https://kit.fontawesome.com/07c96a5d62.js" crossorigin="anonymous"></script>
+
 </head>
 
 <body class="bg-gray-950">
 
     {% include 'navbar.html' %}
 
-    <div class="container mx-auto">
+    <main class="flex-grow container mx-auto py-16">
         {% block content %}
 
         {% endblock %}
-    </div>
+    </main>
 
     {% include 'footer.html' %}
 </body>

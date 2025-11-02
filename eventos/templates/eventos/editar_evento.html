@@ -1,0 +1,115 @@
+{% extends 'core.html' %}
+{% load static %}
+{% load form_filters %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto my-10 p-6 bg-gray-900 rounded-xl shadow-md">
+    <h1 class="text-3xl font-bold mb-6 text-white">Editar Evento: {{ evento.nombre }}</h1>
+
+    <form method="POST" action="{% url 'editar_evento' evento.id %}" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Campos del formulario -->
+        <div>
+            <label class="text-white font-semibold" for="{{ form.nombre.id_for_label }}">
+    {{ form.nombre.label }}
+</label>
+
+            {{ form.nombre|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
+            {% if form.nombre.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.nombre.errors }}</p>
+            {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="text-white font-semibold" for="{{ form.fecha.id_for_label }}">
+                    {{ form.fecha.label }}
+                </label>
+                {{ form.fecha|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
+                {% if form.fecha.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.fecha.errors }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label class="text-white font-semibold" for="{{ form.hora.id_for_label }}">
+                    {{ form.hora.label }}
+                </label>
+                {{ form.hora|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
+                {% if form.hora.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.hora.errors }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label class="text-white font-semibold" for="{{ form.ubicacion.id_for_label }}">
+                {{ form.ubicacion.label }}
+            </label>
+            {{ form.ubicacion|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
+            {% if form.ubicacion.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.ubicacion.errors }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="text-white font-semibold" for="{{ form.descripcion.id_for_label }}">
+                {{ form.descripcion.label }}
+            </label>
+            {{ form.descripcion|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
+            {% if form.descripcion.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.descripcion.errors }}</p>
+            {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="text-white font-semibold" for="{{ form.precio.id_for_label }}">
+                    {{ form.precio.label }}
+                </label>
+                {{ form.precio|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
+                {% if form.precio.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.precio.errors }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label class="text-white font-semibold" for="{{ form.stock.id_for_label }}">
+                    {{ form.stock.label }}
+                </label>
+                {{ form.stock|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
+                {% if form.stock.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.stock.errors }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label class="text-white font-semibold" for="{{ form.imagen.id_for_label }}">
+                {{ form.imagen.label }}
+            </label>
+            {{ form.imagen|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white" }}
+            {% if form.imagen.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.imagen.errors }}</p>
+            {% endif %}
+        </div>
+
+        
+
+        <!-- Botones -->
+        <div class="flex gap-4 mt-6 justify-center">
+            <button type="submit" class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium transition">
+                Guardar Cambios
+            </button>
+
+            {% if request.user == evento.usuario %}
+            <form method="POST" action="{% url 'eliminar_evento' evento.id %}">
+                {% csrf_token %}
+                <button type="submit" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white font-medium transition">
+                    <a href="{% url 'eliminar_evento' evento.id %}">Eliminar Evento</a>
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -2,7 +2,7 @@ from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from .forms import *
-from django.contrib.auth.decorators import login_required
+from eventos.models import Evento
 
 def registrar_usuario(request):
     if request.method == "GET":
@@ -67,4 +67,7 @@ def cerrar_sesion(request):
 
 
 def home(request):
-    return render(request, "usuarios/home.html")
+    evento = Evento.objects.all()  # Obtener todos los eventos
+    return render(request, "usuarios/home.html", {
+        'eventos': evento
+    })

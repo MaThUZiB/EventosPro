@@ -1,21 +1,33 @@
-<!-- navbar.html -->
-<nav class="bg-gray-900 text-gray-100 shadow-md">
+<nav class="bg-gray-900 text-gray-100 shadow-md border-b-2 border-gray-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
 
-            <!-- Logo -->
-            <div class="flex-shrink-0">
-                <h1 class="text-2xl font-bold text-white"><a href="{% url 'home' %}">EventosPro</a></h1>
+            <!-- Izquierda: Logo + enlaces según tipo_usuario -->
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-bold text-white">
+                    <a href="{% url 'home' %}">EventosPro</a>
+                </h1>
+
+                {% if request.user.is_authenticated %}
+                    {% if request.user.tipo_usuario == 'cliente' %}
+                        <a href=" " class="hover:text-blue-400 transition">Mis Tickets</a>
+                    {% elif request.user.tipo_usuario == 'organizador' %}
+                        <a href="{% url 'mis_eventos' %}" class="hover:text-blue-400 transition">Mis Eventos</a>
+                        <a href="{% url 'crear_evento' %}" class="hover:text-blue-400 transition">Crear Evento</a>
+                    {% elif request.user.tipo_usuario == 'administrador' %}
+                        <a href="{% url 'admin:index' %}" class="hover:text-blue-400 transition">Admin Panel</a>
+                    {% endif %}
+                {% endif %}
             </div>
 
-            <!-- Menú desktop -->
+            <!-- Derecha: login/registro o cerrar sesión -->
             <div class="hidden md:flex space-x-6 items-center">
                 {% if request.user.is_authenticated %}
-                <p class="text-white">Hola, {{ request.user.username }}</p>
-                <a href="{% url 'logout' %}" class="hover:text-red-500 transition">Cerrar sesión</a>
+                    <p class="text-white">Hola, {{ request.user.username }}</p>
+                    <a href="{% url 'logout' %}" class="hover:text-red-500 transition">Cerrar sesión</a>
                 {% else %}
-                <a href="{% url 'iniciar_sesion' %}" class="hover:text-blue-400 transition">Iniciar sesión</a>
-                <a href="{% url 'registrar_usuario' %}" class="hover:text-green-400 transition">Registrarse</a>
+                    <a href="{% url 'iniciar_sesion' %}" class="hover:text-blue-400 transition">Iniciar sesión</a>
+                    <a href="{% url 'registrar_usuario' %}" class="hover:text-green-400 transition">Registrarse</a>
                 {% endif %}
             </div>
 
@@ -36,24 +48,20 @@
     <div id="mobile-menu" class="hidden md:hidden bg-gray-800">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {% if request.user.is_authenticated %}
-            <a href="{% url 'home' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Home</a>
-            <a href="{% url 'logout' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Cerrar
-                sesión</a>
+                {% if request.user.tipo_usuario == 'cliente' %}
+                    <a href=" " class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Mis Tickets</a>
+                {% elif request.user.tipo_usuario == 'organizador' %}
+                    <a href="{% url 'mis_eventos' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Mis Eventos</a>
+                    <a href="{% url 'crear_evento' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Crear Evento</a>
+                {% elif request.user.tipo_usuario == 'administrador' %}
+                    <a href="{% url 'admin:index' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Admin Panel</a>
+                {% endif %}
+
+                <a href="{% url 'logout' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Cerrar sesión</a>
             {% else %}
-            <a href="{% url 'iniciar_sesion' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Iniciar
-                sesión</a>
-            <a href="{% url 'registrar_usuario' %}"
-                class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Registrarse</a>
+                <a href="{% url 'iniciar_sesion' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Iniciar sesión</a>
+                <a href="{% url 'registrar_usuario' %}" class="block px-3 py-2 rounded-md text-white hover:bg-gray-700">Registrarse</a>
             {% endif %}
         </div>
     </div>
 </nav>
-
-<script>
-    const menuButton = document.getElementById('menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    menuButton.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-    });
-</script>
