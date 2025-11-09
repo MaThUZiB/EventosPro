@@ -2,66 +2,91 @@
 {% load static %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto my-10 p-6 bg-gray-900 rounded-xl shadow-md">
-    <!-- Imagen del evento -->
-    {% if evento.imagen %}
-    <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}" class="w-full h-64 object-cover rounded-lg mb-6">
-    {% else %}
-    <div class="w-full h-64 bg-gray-800 flex items-center justify-center rounded-lg mb-6">
-        <span class="text-gray-400 text-xl">No hay imagen disponible</span>
-    </div>
-    {% endif %}
+<div class="relative w-full h-56 bg-black">
+  {% if evento.imagen %}
+    <img src="{{ evento.imagen.url }}" class="w-full h-full object-cover opacity-60">
+  {% endif %}
+  <div class="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black via-transparent">
+    <h1 class="text-3xl font-bold text-white">{{ evento.nombre }}</h1>
+    <p class="text-gray-300">{{ evento.ubicacion }}</p>
+  </div>
+</div>
 
-    <!-- Nombre y detalles principales -->
-    <h1 class="text-3xl font-bold mb-2 text-white">{{ evento.nombre }}</h1>
-    <p class="text-gray-300 mb-4">
-        <span class="font-semibold text-gray-200">Fecha:</span> {{ evento.fecha|date:"d M Y" }} &nbsp;
-        <span class="font-semibold text-gray-200">Hora:</span> {{ evento.hora|time:"H:i" }}
-    </p>
-    <p class="text-gray-300 mb-4">
-        <span class="font-semibold text-gray-200">Ubicación:</span> {{ evento.ubicacion }}
-    </p>
-
-    <!-- Descripción -->
-    <div class="mb-4">
-        <h2 class="text-xl font-semibold mb-2 text-white">Descripción</h2>
-        <p class="text-gray-300">{{ evento.descripcion }}</p>
-    </div>
-
-    <!-- Precio y stock -->
-    <div class="flex items-center justify-between mt-6">
-        <div>
-            {% if evento.precio %}
-                <p class="text-lg font-bold text-green-500">Precio: ${{ evento.precio }}</p>
-            {% else %}
-                <p class="text-lg font-bold text-gray-300">Entrada gratuita</p>
-            {% endif %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div>
+      {% if evento.imagen %}
+        <img src="{{ evento.imagen.url }}" class="rounded-lg shadow-lg">
+      {% else %}
+        <div class="w-full h-64 bg-gray-800 rounded-lg flex items-center justify-center">
+          <span class="text-gray-400">Sin imagen</span>
         </div>
-        <div>
-            {% if evento.stock %}
-                <p class="text-gray-300">Disponibles: {{ evento.stock }}</p>
-            {% else %}
-                <p class="text-gray-400">Sin stock limitado</p>
-            {% endif %}
-        </div>
+      {% endif %}
     </div>
 
-    <!-- Botones de acción -->
-    <div class="mt-6 flex gap-4">
-        <!-- Botón editar: solo visible para organizador -->
-        {% if request.user == evento.usuario %}
-            <a href="{% url 'editar_evento' evento.id %}" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white font-medium transition">
-                Editar
+    <div class="md:col-span-2">
+      <p class="text-gray-200 mb-2"><span class="font-semibold text-white">Fecha:</span> {{ evento.fecha|date:"d M Y" }}</p>
+      <p class="text-gray-200 mb-2"><span class="font-semibold text-white">Hora:</span> {{ evento.hora|time:"H:i" }}</p>
+      <p class="text-gray-200 mb-4"><span class="font-semibold text-white">Lugar:</span> {{ evento.ubicacion }}</p>
+
+      <p class="text-green-400 text-2xl font-bold mb-6">
+        {% if evento.precio %}${{ evento.precio }}{% else %}Entrada gratuita{% endif %}
+      </p>
+    </div>
+  </div>
+
+  <h2 class="text-2xl font-semibold text-white mt-10 mb-4">Horarios disponibles</h2>
+
+  {% if funciones %}
+    <div class="space-y-4">
+      {% for f in funciones %}
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-5 flex items-center justify-between">
+          <div>
+            <p class="text-white text-lg font-semibold">
+              {{ f.fecha|date:"d M Y" }} - {{ f.hora|time:"H:i" }}
+            </p>
+            <p class="text-gray-400 text-sm">{{ f.lugar }}</p>
+          </div>
+
+          {# BOTÓN SEGÚN TIPO #}
+          {% if f.sector_set.count > 0 %}
+            <a href="{% url 'eventos:checkout' %}?sector={{ f.sector_set.first.id }}"
+               class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold">
+              Comprar Entrada 🎟️
             </a>
+          {% else %}
+            <a href="{% url 'eventos:seleccionar_butacas' f.id %}"
+               class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold">
+              Seleccionar Butacas 🎟️
+            </a>
+          {% endif %}
+        </div>
+
+        {# LISTADO DE SECTORES #}
+        {% if f.sector_set.count > 0 %}
+          <div class="mt-3 space-y-3">
+            {% for s in f.sector_set.all %}
+              <div class="bg-gray-900 border border-gray-800 rounded-lg p-4 flex justify-between items-center">
+                <div>
+                  <p class="text-white font-medium">{{ s.nombre }}</p>
+                  <p class="text-gray-400 text-sm">Capacidad: {{ s.capacidad }}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-green-400 font-bold text-lg">${{ s.precio }}</p>
+                  <a href="{% url 'eventos:checkout' %}?sector={{ s.id }}"
+                     class="inline-block mt-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded text-white">
+                    Comprar
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
         {% endif %}
 
-        <!-- Botón tickets: visible para todos -->
-        <a href=" " class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition">
-            Comprar Tickets
-        </a>
+      {% endfor %}
     </div>
-
-    <!-- Usuario creador -->
-    <p class="mt-6 text-gray-400 text-sm">Organizado por: {{ evento.usuario.username }}</p>
+  {% else %}
+    <p class="text-gray-400">No hay funciones disponibles.</p>
+  {% endif %}
 </div>
 {% endblock %}

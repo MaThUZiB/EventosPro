@@ -1,0 +1,27 @@
+{% extends 'core.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center bg-gray-900 text-white py-20 px-6">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg text-center max-w-md w-full">
+
+        <h1 class="text-3xl font-bold text-green-400 mb-4">
+            ✅ ¡Compra Exitosa!
+        </h1>
+
+        <p class="text-gray-300 mb-6">
+            Tu ticket ha sido generado correctamente.<br>
+            Revisa tu correo (incluyendo SPAM).
+        </p>
+
+        <a href="{% url 'listar_eventos' %}"
+
+           class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition">
+           Volver al Inicio
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}
