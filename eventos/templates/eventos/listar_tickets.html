@@ -1,0 +1,78 @@
+{% extends 'core.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-900 text-gray-100 py-10 px-6">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-white mb-8 text-center">🎟️ Mis Tickets</h1>
+
+        {% if tickets %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for ticket in tickets %}
+            <div
+                class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition duration-300">
+                <h2 class="text-xl font-semibold text-green-400 mb-2">
+                    {{ ticket.funcion.evento.nombre }}
+                </h2>
+
+                <p class="text-gray-300">
+                    <span class="font-medium">Fecha:</span>
+                    {{ ticket.funcion.fecha|date:"d/m/Y" }}
+                    <span class="font-medium ml-3">Hora:</span>
+                    {{ ticket.funcion.hora|time:"H:i" }}
+                </p>
+
+                <p class="text-gray-400 mt-2">
+                    <span class="font-medium">Lugar:</span>
+                    {{ ticket.funcion.evento.ubicacion }}
+                </p>
+
+                {% if ticket.sector %}
+                <p class="mt-3 text-gray-300">
+                    <span class="font-medium">Sector:</span> {{ ticket.sector.nombre }}
+                </p>
+                {% elif ticket.butaca %}
+                <p class="mt-3 text-gray-300">
+                    <span class="font-medium">Butaca:</span>
+                    Fila {{ ticket.butaca.fila }} - Asiento {{ ticket.butaca.numero }}
+                </p>
+                {% else %}
+                <p class="mt-3 text-gray-400 italic">General</p>
+                {% endif %}
+
+                <p class="mt-3 text-gray-300">
+                    <span class="font-medium">Precio:</span> ${{ ticket.precio }}
+                </p>
+
+                {% if ticket.pagado %}
+                <p class="mt-3 text-green-500 font-semibold">✅ Ticket Pagado</p>
+                {% else %}
+                <p class="mt-3 text-yellow-400 font-semibold">⚠️ Pendiente de Pago</p>
+                {% endif %}
+
+                {% if ticket.invitado_email %}
+                <p class="mt-3 text-sm text-gray-400">
+                    <span class="font-medium">Enviado a:</span> {{ ticket.invitado_email }}
+                </p>
+                {% endif %}
+
+                <div class="mt-6 flex justify-between items-center">
+                    <span class="text-sm text-gray-500">ID: {{ ticket.id }}</span>
+                    <a href="#" class="text-blue-400 hover:text-blue-500 transition text-sm font-medium">
+                        Ver detalles
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center text-gray-400 mt-24">
+            <p class="text-lg mb-3">Aún no tienes tickets registrados.</p>
+            <a href="{% url 'home' %}"
+                class="text-green-400 hover:text-green-500 transition font-semibold">
+                Explorar eventos disponibles →
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

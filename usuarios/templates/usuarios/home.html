@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<section class="py-12 bg-gray-900 text-gray-100">
+<section class="py-12 bg-gray-950 text-gray-100">
     <div class="max-w-7xl mx-auto px-4 relative">
         <h2 class="text-3xl font-bold mb-6 text-white">Eventos Destacados</h2>
 
@@ -13,9 +13,10 @@
                 <div class="flex-shrink-0 w-full bg-gray-800 rounded-xl shadow-lg">
 
                     {% if evento.imagen %}
-                        <img src="{{ evento.imagen.url }}" class="rounded-t-xl w-full h-80 object-cover">
+                    <img src="{{ evento.imagen.url }}" class="rounded-t-xl w-full h-80 object-cover">
                     {% else %}
-                        <img src="{% static 'img/placeholder.jpg' %}" class="rounded-t-xl w-full h-80 object-cover opacity-70">
+                    <img src="{% static 'img/placeholder.jpg' %}"
+                        class="rounded-t-xl w-full h-80 object-cover opacity-70">
                     {% endif %}
 
                     <div class="p-6">
@@ -24,7 +25,7 @@
                         <p class="text-gray-300 mb-4 line-clamp-3">{{ evento.descripcion }}</p>
 
                         <a href="{% url 'eventos:detalle_evento' evento.id %}"
-                           class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium">
+                            class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium">
                             Ver Detalle
                         </a>
                     </div>
@@ -34,10 +35,12 @@
             </div>
 
             <!-- Flechas -->
-            <button id="prev" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full hover:bg-blue-600 z-10 hidden md:block">
+            <button id="prev"
+                class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full hover:bg-blue-600 z-10 hidden md:block">
                 &#10094;
             </button>
-            <button id="next" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full hover:bg-blue-600 z-10 hidden md:block">
+            <button id="next"
+                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full hover:bg-blue-600 z-10 hidden md:block">
                 &#10095;
             </button>
         </div>

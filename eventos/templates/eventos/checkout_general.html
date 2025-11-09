@@ -9,23 +9,43 @@
     <p class="text-gray-400 mb-1">{{ evento.ubicacion }}</p>
 
     {% if sector %}
-      <p class="text-gray-300 mb-4">Sector: <span class="font-semibold text-white">{{ sector.nombre }}</span></p>
+      <p class="text-gray-300 mb-4">
+        Sector: <span class="font-semibold text-white">{{ sector.nombre }}</span>
+      </p>
     {% endif %}
 
-    <form method="POST" action="{% url 'comprar_invitado' %}">
+    <form method="POST" action="{% url 'eventos:comprar_invitado' %}">
       {% csrf_token %}
 
-      {% if sector %}<input type="hidden" name="sector" value="{{ sector.id }}">{% endif %}
+      <!-- ✅ Campo oculto para evitar el error 404 -->
+      <input type="hidden" name="evento_id" value="{{ evento.id }}">
+
+      {% if sector %}
+        <input type="hidden" name="sector" value="{{ sector.id }}">
+      {% endif %}
 
       <label class="block text-gray-300 mb-2">Cantidad de Entradas:</label>
       <select name="cantidad" class="w-full bg-gray-900 text-gray-200 border border-gray-700 rounded-lg p-3 mb-4">
-        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
       </select>
 
-      <label class="block text-gray-300 mb-2">Correo (para enviar entrada):</label>
-      <input name="email" type="email" required
-             class="w-full bg-gray-900 text-gray-200 border border-gray-700 rounded-lg p-3 mb-6"
-             placeholder="tucorreo@dominio.com">
+      {% if not request.user.is_authenticated %}
+        <!-- 🟡 Si el usuario es invitado -->
+        <label class="block text-gray-300 mb-2">Correo (para enviar entrada):</label>
+        <input name="email" type="email" required
+          class="w-full bg-gray-900 text-gray-200 border border-gray-700 rounded-lg p-3 mb-6"
+          placeholder="tucorreo@dominio.com">
+      {% else %}
+        <!-- 🟢 Si el usuario está autenticado -->
+        <p class="text-gray-300 mb-6">
+          Se enviará la entrada a:
+          <span class="font-semibold text-white">{{ request.user.email }}</span>
+        </p>
+      {% endif %}
 
       <div class="flex justify-between items-center mb-6">
         <span class="text-gray-300">Total:</span>

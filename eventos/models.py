@@ -9,10 +9,15 @@ class Evento(models.Model):
         ('cine', 'Cine / Teatro (Butacas Numeradas)'),
         ('fiesta', 'Fiesta / Concierto (Sectores / Mesas)')
     ]
+    ESTADO_EVENTO = [
+        ('pendiente', 'Pendiente'),
+        ('publicado', 'Publicado'),
+        ('cancelado', 'Cancelado'),
+    ]
 
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     tipo_evento = models.CharField(max_length=20, choices=TIPO_EVENTO, default='fiesta')
-
+    estado = models.CharField(max_length=20, choices=ESTADO_EVENTO, default='pendiente')
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
     fecha = models.DateField()

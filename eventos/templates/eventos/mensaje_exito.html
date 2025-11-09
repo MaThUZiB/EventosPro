@@ -1,0 +1,45 @@
+{% extends 'core.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100 px-6 py-12">
+    <div class="max-w-lg w-full bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl p-8 text-center space-y-6">
+
+        <!-- Icono de éxito -->
+        <div class="flex justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+
+        <!-- Título -->
+        <h1 class="text-2xl font-semibold text-white">
+            ¡Evento creado con éxito!
+        </h1>
+
+        <!-- Mensaje informativo -->
+        <p class="text-gray-300 leading-relaxed">
+            Tu evento ha sido registrado correctamente y se encuentra en estado
+            <span class="font-medium text-yellow-400">pendiente de revisión</span>.
+        </p>
+
+        <p class="text-gray-400">
+            El equipo de <span class="text-blue-400 font-medium">EventosPro</span> verificará que cumpla con todos los
+            requisitos antes de ser publicado en la plataforma.
+        </p>
+
+        <!-- Línea divisoria decorativa -->
+        <div class="border-t border-gray-700 my-4"></div>
+
+        <!-- Botón volver -->
+        <div class="pt-2">
+            <a href="{% url 'eventos:mis_eventos' %}" class="inline-block bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-500/40
+                      text-white font-medium py-2 px-6 rounded-lg shadow-lg transition-all duration-300">
+                Volver a mis eventos
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

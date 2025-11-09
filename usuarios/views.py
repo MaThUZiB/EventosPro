@@ -67,7 +67,7 @@ def cerrar_sesion(request):
 
 
 def home(request):
-    evento = Evento.objects.all()  # Obtener todos los eventos
+    evento = Evento.objects.filter(estado='publicado').order_by('fecha', 'hora')  # Obtener todos los eventos publicados
     return render(request, "usuarios/home.html", {
         'eventos': evento
     })

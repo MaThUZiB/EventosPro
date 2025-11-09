@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test 
 from django.http import HttpResponse
-
+from .forms import EventoForm
 from .models import Evento, Funcion, Sala, Butaca, Ticket, Sector
+from django.contrib import messages
 
 def es_organizador(user):
     return user.is_authenticated and getattr(user, "tipo_usuario", None) == "organizador"
@@ -11,7 +12,6 @@ def es_organizador(user):
 # --------- ORGANIZADOR (lo que ya tenías) ---------
 @user_passes_test(es_organizador)
 def crear_evento(request):
-    from .forms import EventoForm
     if request.method == 'POST':
         form = EventoForm(request.POST, request.FILES)
         if form.is_valid():
@@ -26,13 +26,10 @@ def crear_evento(request):
                 hora=evento.hora,
                 lugar=evento.ubicacion  # usamos el campo ubicacion del evento
             )
-
-            return redirect('eventos:listar_eventos')
-
+            return render(request, 'eventos/mensaje_exito.html',)
     else:
         form = EventoForm()
     return render(request, 'eventos/crear_eventos.html', {'form': form})
-
 
 
 @user_passes_test(es_organizador)
@@ -63,7 +60,7 @@ def mis_eventos(request):
 
 # --------- PÚBLICO ---------
 def listar_eventos(request):
-    eventos = Evento.objects.all().order_by('fecha', 'hora')
+    eventos = Evento.objects.filter(estado='publicado').order_by('fecha', 'hora')
     return render(request, 'eventos/listar_eventos.html', {'eventos': eventos})
 
 def detalle_evento(request, id):
@@ -75,7 +72,9 @@ def detalle_evento(request, id):
         'funciones': funciones
     })
 
-
+def listar_tickets(request):
+    tickets = Ticket.objects.filter(usuario=request.user)
+    return render(request, 'eventos/listar_tickets.html', {'tickets': tickets})
 
 
 def seleccionar_butacas(request, funcion_id):
@@ -131,36 +130,52 @@ def checkout(request):
 
 @csrf_exempt
 def comprar_invitado(request):
-    """Crea tickets para invitado. Soporta sector (fiestas) y butacas (cine)."""
+    """Procesa la compra de entradas para usuarios o invitados (según autenticación)."""
     if request.method != "POST":
-        return redirect('home')
+        messages.error(request, "Método no permitido.")
+        return redirect("eventos:listar_eventos")
 
     email = request.POST.get("email", "").strip()
     cantidad = int(request.POST.get("cantidad", "1"))
     sector_id = request.POST.get("sector")
     butacas_ids = request.POST.get("butacas")
 
+    # Determinar si el usuario está autenticado
+    if request.user.is_authenticated:
+        usuario = request.user
+        correo = request.user.email
+    else:
+        usuario = None
+        correo = email
+
+    # Validar correo si es invitado
+    if not correo:
+        messages.error(request, "Debes ingresar un correo electrónico válido.")
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+
+    # Compra por sector (fiesta/concierto)
     if sector_id:
         sector = get_object_or_404(Sector, id=sector_id)
         for _ in range(cantidad):
             Ticket.objects.create(
-                usuario=None,
-                invitado_email=email,
+                usuario=usuario,
+                invitado_email=None if usuario else correo,
                 funcion=sector.funcion,
                 sector=sector,
                 precio=sector.precio,
                 pagado=True
             )
-        # (opcional) reducir capacidad: sector.capacidad -= cantidad; sector.save()
+        messages.success(request, f"Compra realizada con éxito 🎟️. Se enviarán las entradas a {correo}.")
         return render(request, "eventos/compra_exitosa.html")
 
+    # Compra por butacas (cine/teatro)
     if butacas_ids:
         ids = [x for x in butacas_ids.split(",") if x]
         for bid in ids:
             b = get_object_or_404(Butaca, id=bid)
             Ticket.objects.create(
-                usuario=None,
-                invitado_email=email,
+                usuario=usuario,
+                invitado_email=None if usuario else correo,
                 funcion=b.sala.funcion,
                 butaca=b,
                 precio=b.sala.funcion.evento.precio,
@@ -168,6 +183,9 @@ def comprar_invitado(request):
             )
             b.disponible = False
             b.save()
+        messages.success(request, f"Compra realizada con éxito 🎟️. Se enviarán las entradas a {correo}.")
         return render(request, "eventos/compra_exitosa.html")
 
-    return redirect('home')
+    # Si no hay sector ni butacas
+    messages.error(request, "No se ha seleccionado un sector ni butacas.")
+    return redirect("eventos:listar_eventos")
