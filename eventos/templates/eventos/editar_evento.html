@@ -3,111 +3,90 @@
 {% load form_filters %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto my-10 p-6 bg-gray-900 rounded-xl shadow-md">
-    <h1 class="text-3xl font-bold mb-6 text-white">Editar Evento: {{ evento.nombre }}</h1>
+<div class="max-w-3xl mx-auto my-10 p-8 rounded-2xl shadow-xl bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 border border-gray-400/40">
+    <h1 class="text-3xl font-bold mb-8 text-gray-900">
+        ✏️ Editar Evento: <span class="text-blue-600">{{ evento.nombre }}</span>
+    </h1>
 
-    <form method="POST" action="{% url 'editar_evento' evento.id %}" enctype="multipart/form-data" class="space-y-6">
+    <form method="POST" action="{% url 'eventos:editar_evento' evento.id %}" enctype="multipart/form-data" class="space-y-6">
         {% csrf_token %}
 
-        <!-- Campos del formulario -->
+        <!-- Nombre -->
         <div>
-            <label class="text-white font-semibold" for="{{ form.nombre.id_for_label }}">
-    {{ form.nombre.label }}
-</label>
-
-            {{ form.nombre|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
-            {% if form.nombre.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.nombre.errors }}</p>
-            {% endif %}
+            <label class="text-gray-800 font-semibold block mb-2" for="{{ form.nombre.id_for_label }}">
+                {{ form.nombre.label }}
+            </label>
+            {{ form.nombre|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" }}
         </div>
 
+        <!-- Fecha y hora -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label class="text-white font-semibold" for="{{ form.fecha.id_for_label }}">
+                <label class="text-gray-800 font-semibold block mb-2" for="{{ form.fecha.id_for_label }}">
                     {{ form.fecha.label }}
                 </label>
-                {{ form.fecha|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
-                {% if form.fecha.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.fecha.errors }}</p>
-                {% endif %}
+                {{ form.fecha|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500" }}
             </div>
             <div>
-                <label class="text-white font-semibold" for="{{ form.hora.id_for_label }}">
+                <label class="text-gray-800 font-semibold block mb-2" for="{{ form.hora.id_for_label }}">
                     {{ form.hora.label }}
                 </label>
-                {{ form.hora|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
-                {% if form.hora.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.hora.errors }}</p>
-                {% endif %}
+                {{ form.hora|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500" }}
             </div>
         </div>
 
+        <!-- Ubicación -->
         <div>
-            <label class="text-white font-semibold" for="{{ form.ubicacion.id_for_label }}">
+            <label class="text-gray-800 font-semibold block mb-2" for="{{ form.ubicacion.id_for_label }}">
                 {{ form.ubicacion.label }}
             </label>
-            {{ form.ubicacion|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
-            {% if form.ubicacion.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.ubicacion.errors }}</p>
-            {% endif %}
+            {{ form.ubicacion|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-indigo-500" }}
         </div>
 
+        <!-- Descripción -->
         <div>
-            <label class="text-white font-semibold" for="{{ form.descripcion.id_for_label }}">
+            <label class="text-gray-800 font-semibold block mb-2" for="{{ form.descripcion.id_for_label }}">
                 {{ form.descripcion.label }}
             </label>
-            {{ form.descripcion|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
-            {% if form.descripcion.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.descripcion.errors }}</p>
-            {% endif %}
+            {{ form.descripcion|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-indigo-500" }}
         </div>
 
+        <!-- Precio y stock -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label class="text-white font-semibold" for="{{ form.precio.id_for_label }}">
+                <label class="text-gray-800 font-semibold block mb-2" for="{{ form.precio.id_for_label }}">
                     {{ form.precio.label }}
                 </label>
-                {{ form.precio|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
-                {% if form.precio.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.precio.errors }}</p>
-                {% endif %}
+                {{ form.precio|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-green-500" }}
             </div>
             <div>
-                <label class="text-white font-semibold" for="{{ form.stock.id_for_label }}">
+                <label class="text-gray-800 font-semibold block mb-2" for="{{ form.stock.id_for_label }}">
                     {{ form.stock.label }}
                 </label>
-                {{ form.stock|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white focus:ring-2 focus:ring-blue-500" }}
-                {% if form.stock.errors %}
-                    <p class="text-red-500 text-sm mt-1">{{ form.stock.errors }}</p>
-                {% endif %}
+                {{ form.stock|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-green-500" }}
             </div>
         </div>
 
+        <!-- Imagen -->
         <div>
-            <label class="text-white font-semibold" for="{{ form.imagen.id_for_label }}">
+            <label class="text-gray-800 font-semibold block mb-2" for="{{ form.imagen.id_for_label }}">
                 {{ form.imagen.label }}
             </label>
-            {{ form.imagen|add_class:"w-full p-3 rounded-lg bg-gray-800 text-white" }}
-            {% if form.imagen.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.imagen.errors }}</p>
-            {% endif %}
+            {{ form.imagen|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900" }}
         </div>
 
-        
-
         <!-- Botones -->
-        <div class="flex gap-4 mt-6 justify-center">
-            <button type="submit" class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium transition">
-                Guardar Cambios
+        <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+            <button type="submit"
+                class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg text-white font-medium transition transform hover:scale-105 shadow-md">
+                💾 Guardar Cambios
             </button>
 
             {% if request.user == evento.usuario %}
-            <form method="POST" action="{% url 'eliminar_evento' evento.id %}">
-                {% csrf_token %}
-                <button type="submit" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white font-medium transition">
-                    <a href="{% url 'eliminar_evento' evento.id %}">Eliminar Evento</a>
-                </button>
-            </form>
+            <a href="{% url 'eventos:eliminar_evento' evento.id %}"
+                class="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 rounded-lg text-white font-medium transition transform hover:scale-105 shadow-md text-center">
+                🗑️ Eliminar Evento
+            </a>
             {% endif %}
         </div>
     </form>

@@ -2,51 +2,87 @@
 {% load static %}
 {% block content %}
 
-<section class="min-h-screen flex items-center justify-center bg-[#0F172A] text-gray-100">
-    <div class="bg-gray-900 rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-700">
+<section class="flex items-center justify-center min-h-[70vh] relative z-10">
+    <div class="bg-gray-900 rounded-2xl shadow-2xl p-6 w-full max-w-sm border border-gray-700 backdrop-blur-md">
 
-        <!-- Logo o título -->
-        <div class="text-center mb-6">
-            <!-- Aquí puedes poner tu logo más adelante -->
-            <!-- <img src="{% static 'ruta/a/tu/logo.png' %}" alt="Logo" class="w-16 mx-auto mb-3"> -->
-            <h1 class="text-3xl font-semibold">Bienvenido</h1>
+        <!-- Título -->
+        <div class="text-center mb-5">
+            <h1 class="text-2xl font-semibold text-white">Bienvenido</h1>
             <p class="text-gray-400 text-sm mt-1">Inicia sesión para continuar</p>
         </div>
 
         <!-- Mensajes de error -->
         {% if error %}
-            <p class="text-red-500 text-sm mb-3">{{ error }}</p>
+            <p id="form-error" class="text-red-500 text-sm mb-3">{{ error }}</p>
+        {% else %}
+            <p id="form-error" class="hidden"></p>
         {% endif %}
 
         <!-- Formulario -->
-        <form method="POST" class="space-y-5">
+        <form method="POST" id="login-form" class="space-y-4 relative z-10">
             {% csrf_token %}
 
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-300">Usuario o correo</label>
                 <input type="text" id="username" name="username" required
                     value="{{ request.POST.username|default_if_none:'' }}"
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white">
             </div>
 
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-300">Contraseña</label>
                 <input type="password" id="password" name="password" required
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white">
             </div>
 
-            <button type="submit"
-                class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition duration-200">
-                Iniciar sesión
-            </button>
+            <!-- Contenedor del botón -->
+            <div id="btn-container" class="mt-2">
+                <button type="submit"
+                    class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition duration-200">
+                    Iniciar sesión
+                </button>
+            </div>
         </form>
 
         <!-- Enlace a registro -->
-        <div class="mt-6 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-400">
+        <div class="mt-5 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-400">
             <p>¿No tienes cuenta?</p>
-            <!-- Aquí puedes poner la URL al registro más adelante -->
             <a href="{% url 'registrar_usuario' %}" class="mt-2 sm:mt-0 text-blue-400 hover:text-blue-300 font-medium">Crear cuenta</a>
         </div>
     </div>
 </section>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('login-form');
+    const fields = form.querySelectorAll('div:not(#btn-container)'); // excluye contenedor del botón
+    const btnContainer = document.getElementById('btn-container');
+    const inputs = form.querySelectorAll('input');
+    const errorEl = document.getElementById('form-error');
+
+    // Animación de entrada solo para campos
+    gsap.from(fields, { opacity: 0, y: 20, duration: 0.6, stagger: 0.1, ease: "power2.out" });
+
+    // Animación del contenedor del botón
+    gsap.from(btnContainer, { opacity: 0, y: 20, duration: 0.6, delay: 0.5, ease: "power2.out" });
+
+    // Resaltado dinámico al enfocar inputs
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            gsap.to(input, { borderColor: "#3b82f6", boxShadow: "0 0 10px rgba(59,130,246,0.5)", duration: 0.3 });
+        });
+        input.addEventListener('blur', () => {
+            gsap.to(input, { borderColor: "#374151", boxShadow: "none", duration: 0.3 });
+        });
+    });
+
+    // Sacudida del formulario si hay error
+    if (errorEl && !errorEl.classList.contains('hidden')) {
+        gsap.from(form, { x: -10, duration: 0.05, repeat: 5, yoyo: true });
+    }
+});
+</script>
+
 {% endblock %}

@@ -22,7 +22,7 @@ class Evento(models.Model):
     descripcion = models.TextField(blank=True)
     fecha = models.DateField()
     hora = models.TimeField()
-    ubicacion = models.CharField(max_length=200, blank=True)
+    ubicacion = models.CharField(max_length=20, blank=True)
     imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
     precio = models.IntegerField(default=0)
     stock = models.IntegerField(default=0)

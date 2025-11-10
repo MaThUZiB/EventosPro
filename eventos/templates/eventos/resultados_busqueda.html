@@ -1,0 +1,27 @@
+{% load static %}
+
+{% if resultados %}
+<div class="grid md:grid-cols-3 gap-6 mt-10">
+    {% for evento in resultados %}
+    <div class="bg-gray-800 rounded-xl shadow hover:shadow-indigo-500/30 transition overflow-hidden">
+        {% if evento.imagen %}
+        <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}" class="w-full h-56 object-cover">
+        {% else %}
+        <img src="{% static 'img/placeholder.jpg' %}" alt="Sin imagen" class="w-full h-56 object-cover opacity-80">
+        {% endif %}
+        <div class="p-5">
+            <h3 class="text-xl font-semibold text-white mb-2">{{ evento.nombre }}</h3>
+            <p class="text-gray-400 text-sm mb-2">{{ evento.fecha }} — {{ evento.hora }}</p>
+            <p class="text-gray-300 mb-3 line-clamp-3">{{ evento.descripcion }}</p>
+            <p class="text-indigo-400 font-bold mb-4">${{ evento.precio }}</p>
+            <a href="{% url 'eventos:detalle_evento' evento.id %}"
+               class="inline-block px-5 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-medium transition">
+                Ver Detalle
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-gray-400 text-lg mt-10">No se encontraron eventos con esos criterios.</p>
+{% endif %}

@@ -2,88 +2,116 @@
 {% load static %}
 {% block content %}
 
-<section class="min-h-screen flex items-center justify-center bg-[#0F172A] text-gray-100">
-    <div class="bg-gray-900 rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-700">
+<section class="flex items-center justify-center text-gray-100 relative py-8">
+    <div class="bg-gray-900 bg-opacity-80 rounded-2xl shadow-2xl p-6 w-full max-w-3xl border border-gray-700 z-10">
 
         <!-- Logo o título -->
-        <div class="text-center mb-6">
-            <!-- <img src="{% static 'ruta/a/logo.png' %}" alt="Logo" class="w-16 mx-auto mb-3"> -->
+        <div class="text-center mb-4">
             <h1 class="text-3xl font-semibold">Crear cuenta</h1>
             <p class="text-gray-400 text-sm mt-1">Completa tus datos para registrarte</p>
         </div>
 
         <!-- Mensajes de error -->
         {% if error %}
-            <p class="text-red-500 text-sm mb-3">{{ error }}</p>
+            <p id="form-error" class="text-red-500 text-sm mb-2">{{ error }}</p>
+        {% else %}
+            <p id="form-error" class="hidden"></p>
         {% endif %}
 
-        <!-- Formulario -->
-        <form method="POST" class="space-y-5">
+        <!-- Formulario en dos columnas -->
+        <form method="POST" id="registro-form" class="grid grid-cols-1 md:grid-cols-2 gap-3">
             {% csrf_token %}
 
-            <div>
+            <div class="flex flex-col">
                 <label for="username" class="block text-sm font-medium text-gray-300">Usuario</label>
                 <input type="text" id="username" name="username" required
                     value="{{ request.POST.username|default_if_none:'' }}"
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
 
-            <div>
+            <div class="flex flex-col">
                 <label for="email" class="block text-sm font-medium text-gray-300">Correo electrónico</label>
                 <input type="email" id="email" name="email" required
                     value="{{ request.POST.email|default_if_none:'' }}"
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
 
-            <div>
+            <div class="flex flex-col">
                 <label for="rut" class="block text-sm font-medium text-gray-300">RUT</label>
                 <input type="text" id="rut" name="rut" required
                     value="{{ request.POST.rut|default_if_none:'' }}"
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
 
-            <div>
+            <div class="flex flex-col">
                 <label for="telefono" class="block text-sm font-medium text-gray-300">Teléfono</label>
                 <input type="text" id="telefono" name="telefono" required
                     value="{{ request.POST.telefono|default_if_none:'' }}"
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
 
-            <div>
+            <div class="flex flex-col">
+                <label for="password1" class="block text-sm font-medium text-gray-300">Contraseña</label>
+                <input type="password" id="password1" name="password1" required
+                    class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div class="flex flex-col">
+                <label for="password2" class="block text-sm font-medium text-gray-300">Confirmar contraseña</label>
+                <input type="password" id="password2" name="password2" required
+                    class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Tipo de usuario a ancho completo -->
+            <div class="flex flex-col md:col-span-2">
                 <label for="tipo_usuario" class="block text-sm font-medium text-gray-300">Tipo de usuario</label>
                 <select id="tipo_usuario" name="tipo_usuario"
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <option value="">Selecciona un tipo</option>
-                    <option value="cliente" {% if request.POST.tipo_usuario == "cliente" %}selected{% endif %}>Cliente</option>
-                    <option value="organizador" {% if request.POST.tipo_usuario == "organizador" %}selected{% endif %}>Organizador</option>
+                    <option value="cliente" {% if request.POST.tipo_usuario == 'cliente' %}selected{% endif %}>Cliente</option>
+                    <option value="organizador" {% if request.POST.tipo_usuario == 'organizador' %}selected{% endif %}>Organizador</option>
                 </select>
             </div>
 
-            <div>
-                <label for="password1" class="block text-sm font-medium text-gray-300">Contraseña</label>
-                <input type="password" id="password1" name="password1" required
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <!-- Botón a ancho completo -->
+            <div class="md:col-span-2">
+                <button type="submit" id="submit-btn"
+                    class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition duration-200">
+                    Registrarse
+                </button>
             </div>
-
-            <div>
-                <label for="password2" class="block text-sm font-medium text-gray-300">Confirmar contraseña</label>
-                <input type="password" id="password2" name="password2" required
-                    class="w-full mt-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
-
-            <button type="submit"
-                class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition duration-200">
-                Registrarse
-            </button>
         </form>
 
-        <!-- Enlace a login -->
-        <div class="mt-6 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-400">
+        <div class="mt-4 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-400 z-10">
             <p>¿Ya tienes una cuenta?</p>
-            <!-- Aquí puedes poner la URL al login más adelante -->
-            <a href="{% url 'iniciar_sesion' %}" class="mt-2 sm:mt-0 text-blue-400 hover:text-blue-300 font-medium">Iniciar sesión</a>
+            <a href="{% url 'iniciar_sesion' %}" class="mt-1 sm:mt-0 text-blue-400 hover:text-blue-300 font-medium">Iniciar sesión</a>
         </div>
     </div>
 </section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('registro-form');
+    const fields = form.querySelectorAll('div');
+    const inputs = form.querySelectorAll('input, select');
+    const errorEl = document.getElementById('form-error');
+
+    gsap.from(fields, { opacity: 0, y: 20, duration: 0.6, stagger: 0.1, ease: "power2.out" });
+
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            gsap.to(input, { borderColor: "#3b82f6", boxShadow: "0 0 10px rgba(59,130,246,0.5)", duration: 0.3 });
+        });
+        input.addEventListener('blur', () => {
+            gsap.to(input, { borderColor: "#374151", boxShadow: "none", duration: 0.3 });
+        });
+    });
+
+    if (errorEl && !errorEl.classList.contains('hidden')) {
+        gsap.from(form, { x: -10, duration: 0.05, repeat: 5, yoyo: true });
+    }
+});
+</script>
 
 {% endblock %}

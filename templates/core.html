@@ -2,32 +2,85 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Compra entradas y descubre los mejores eventos en tu ciudad con Eventos Pro.">
     <meta name="theme-color" content="#0f172a">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>Eventos - Pro</title>
+    
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    
+    <!-- GSAP CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+    
     <script src="https://kit.fontawesome.com/07c96a5d62.js" crossorigin="anonymous"></script>
+    <title>Eventos - Pro</title>
 
+    <style>
+        /* Contenedor de partículas */
+        #particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Estilo de partículas */
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            filter: blur(1.5px);
+        }
+    </style>
 </head>
+<body class="min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-950 to-black text-gray-100 relative overflow-x-hidden">
 
-<body class="bg-gray-950">
+    <!-- Contenedor de partículas -->
+    <div id="particles"></div>
 
     {% include 'navbar.html' %}
 
-    <main class="flex-grow container mx-auto py-16">
-        {% block content %}
-
-        {% endblock %}
+    <main class="flex-grow container mx-auto py-4 relative z-10">
+        {% block content %}{% endblock %}
     </main>
 
     {% include 'footer.html' %}
-</body>
 
+    <script>
+        const container = document.getElementById('particles');
+        const numParticles = 120; // muchas más partículas
+        const particles = [];
+
+        for (let i = 0; i < numParticles; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('particle');
+            dot.style.left = Math.random() * 100 + '%';
+            dot.style.top = Math.random() * 100 + '%';
+            container.appendChild(dot);
+
+            const speed = 5 + Math.random() * 10; // velocidad aleatoria
+            const rangeX = 100 + Math.random() * 200; // movimiento horizontal amplio
+            const rangeY = 100 + Math.random() * 200; // movimiento vertical amplio
+
+            gsap.to(dot, {
+                x: () => Math.random() * rangeX - rangeX/2,
+                y: () => Math.random() * rangeY - rangeY/2,
+                duration: speed,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                rotation: Math.random() * 360, // rotación ligera para dinamismo
+                opacity: 0.05 + Math.random() * 0.15 // variación de opacidad
+            });
+
+            particles.push(dot);
+        }
+    </script>
+</body>
 </html>

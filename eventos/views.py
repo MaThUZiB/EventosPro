@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import user_passes_test 
-from django.http import HttpResponse
+from django.http import JsonResponse
 from .forms import EventoForm
 from .models import Evento, Funcion, Sala, Butaca, Ticket, Sector
 from django.contrib import messages
+from django.db.models import Q
+from django.template.loader import render_to_string
 
 def es_organizador(user):
     return user.is_authenticated and getattr(user, "tipo_usuario", None) == "organizador"
@@ -31,6 +33,26 @@ def crear_evento(request):
         form = EventoForm()
     return render(request, 'eventos/crear_eventos.html', {'form': form})
 
+def buscar_eventos_ajax(request):
+    q = request.GET.get('q', '')
+    fecha = request.GET.get('fecha', '')
+
+    resultados = Evento.objects.filter(estado='publicado')
+
+    if q:
+        resultados = resultados.filter(
+            Q(nombre__icontains=q) |
+            Q(descripcion__icontains=q) |
+            Q(ubicacion__icontains=q)
+        )
+    if fecha:
+        resultados = resultados.filter(fecha=fecha)
+
+    html = render_to_string('eventos/resultados_busqueda.html', {'resultados': resultados})
+    return JsonResponse({'html': html})
+
+def buscar_eventos(request):
+    return render(request, 'eventos/busqueda_eventos.html')
 
 @user_passes_test(es_organizador)
 def editar_evento(request, id):
@@ -40,7 +62,7 @@ def editar_evento(request, id):
         form = EventoForm(request.POST, request.FILES, instance=evento)
         if form.is_valid():
             form.save()
-            return redirect('mis_eventos')
+            return redirect('eventos:mis_eventos')
     else:
         form = EventoForm(instance=evento)
     return render(request, 'eventos/editar_evento.html', {'form': form, 'evento': evento})

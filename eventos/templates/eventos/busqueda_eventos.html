@@ -1,0 +1,68 @@
+{% load static %}
+
+<div class="w-full max-w-6xl mx-auto px-6 py-16">
+    <div class="flex flex-col items-center space-y-6">
+        <!-- 🔍 Buscador -->
+        <form id="buscar-form"
+            class="w-full flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <input type="text" id="buscar-input" name="q" placeholder="Buscar eventos..."
+                class="flex-1 w-full border border-gray-700 rounded-2xl bg-gray-900 text-white text-lg px-6 py-4 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-gray-500 shadow-lg">
+            <button type="submit"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold transition shadow-md">
+                Buscar
+            </button>
+        </form>
+
+        <!-- 📅 Filtro de fecha -->
+        <div class="w-full flex justify-center">
+            <input type="date" id="fecha-input" name="fecha"
+                class="border border-gray-700 rounded-xl bg-gray-900 text-white text-lg px-5 py-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none shadow">
+        </div>
+    </div>
+
+    <!-- 🧩 Resultados dinámicos -->
+    <div id="resultados" class="mt-14"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('buscar-form');
+        const input = document.getElementById('buscar-input');
+        const fechaInput = document.getElementById('fecha-input');
+        const resultadosDiv = document.getElementById('resultados');
+        // URL correcta para AJAX
+        const buscarAjaxUrl = "{% url 'eventos:buscar_eventos_ajax' %}";
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const query = input.value.trim();
+            const fecha = fechaInput.value;
+            // Si no hay texto, no buscar
+            if (!query) {
+                resultadosDiv.innerHTML = '<p class="text-gray-400 text-lg mt-10">Ingresa texto para buscar.</p>';
+                return;
+            }
+            try {
+                // Construimos la URL con parámetros
+                const url = `${buscarAjaxUrl}?q=${encodeURIComponent(query)}&fecha=${encodeURIComponent(fecha)}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    console.error("❌ Error en la petición AJAX:", response.statusText);
+                    resultadosDiv.innerHTML = `<p class="text-red-500">Error al buscar eventos: ${response.statusText}</p>`;
+                    return;
+                }
+                // Intentamos obtener JSON
+                const data = await response.json();
+                if (data.html) {
+                    resultadosDiv.innerHTML = data.html;
+                    resultadosDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    resultadosDiv.innerHTML = '<p class="text-gray-400 text-lg mt-10">No se encontraron eventos.</p>';
+                }
+            } catch (error) {
+                console.error("💥 Excepción al buscar eventos:", error);
+                resultadosDiv.innerHTML = `<p class="text-red-500">Ocurrió un error: ${error}</p>`;
+            }
+        });
+
+    });
+</script>
