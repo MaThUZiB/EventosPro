@@ -11,13 +11,13 @@
 
                 {% if request.user.is_authenticated %}
                     {% if request.user.tipo_usuario == 'cliente' %}
-                        <a href="{% url 'eventos:listar_tickets' %}" class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
+                        <a href=" " class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
                     {% elif request.user.tipo_usuario == 'organizador' %}
-                        <a href="{% url 'eventos:listar_tickets' %}" class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
+                        <a href=" " class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
                         <a href="{% url 'eventos:mis_eventos' %}" class="hover:text-blue-400 transition duration-300">Mis Eventos</a>
                         <a href="{% url 'eventos:crear_evento' %}" class="hover:text-blue-400 transition duration-300">Crear Evento</a>
                     {% elif request.user.tipo_usuario == 'administrador' %}
-                        <a href="{% url 'eventos:listar_tickets' %}" class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
+                        <a href=" " class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
                         <a href="{% url 'admin:index' %}" class="hover:text-blue-400 transition duration-300">Admin Panel</a>
                     {% endif %}
                 {% endif %}
@@ -53,13 +53,13 @@
         <div class="px-4 pt-3 pb-4 space-y-2 sm:px-6">
             {% if request.user.is_authenticated %}
                 {% if request.user.tipo_usuario == 'cliente' %}
-                    <a href="{% url 'eventos:listar_tickets' %}" class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Mis Tickets</a>
+                    <a href=" " class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Mis Tickets</a>
                 {% elif request.user.tipo_usuario == 'organizador' %}
-                    <a href="{% url 'eventos:listar_tickets' %}" class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Mis Tickets</a>
+                    <a href=" " class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Mis Tickets</a>
                     <a href="{% url 'eventos:mis_eventos' %}" class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Mis Eventos</a>
                     <a href="{% url 'eventos:crear_evento' %}" class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Crear Evento</a>
                 {% elif request.user.tipo_usuario == 'administrador' %}
-                    <a href="{% url 'eventos:listar_tickets' %}" class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Mis Tickets</a>
+                    <a href=" " class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Mis Tickets</a>
                     <a href="{% url 'admin:index' %}" class="block px-3 py-2 rounded-md text-gray-100 hover:bg-blue-900/60 transition">Admin Panel</a>
                 {% endif %}
                 <a href="{% url 'logout' %}" class="block px-3 py-2 rounded-md text-gray-100 hover:bg-red-800/70 transition">Cerrar sesión</a>
