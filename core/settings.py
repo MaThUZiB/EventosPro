@@ -40,6 +40,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 INSTALLED_APPS = [
+    'compra',
     'eventos',
     'usuarios',
     'django.contrib.admin',
