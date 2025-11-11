@@ -1,6 +1,6 @@
 from django.db import models
 from usuarios.models import Usuario
-from eventos.models import Evento, Asiento
+from eventos.models import AsientoEvento
 
 # Create your models here.
 class Compra(models.Model):
@@ -14,12 +14,11 @@ class Compra(models.Model):
 
 class CompraDetalle(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='detalles')
-    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
-    asiento = models.ForeignKey(Asiento, on_delete=models.PROTECT)  # cada ticket un asiento
+    asiento = models.ForeignKey(AsientoEvento, on_delete=models.PROTECT)  # cada ticket un asiento
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
 
     def save(self, *args, **kwargs):
-        self.subtotal = self.evento.precio_ticket
+        self.subtotal = self.asiento.evento.precio_ticket
         super().save(*args, **kwargs)
         # Marcar el asiento como ocupado
         self.asiento.disponible = False
