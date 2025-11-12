@@ -52,6 +52,12 @@ class AsientoEvento(models.Model):
     columna = models.PositiveIntegerField()
     disponible = models.BooleanField(default=True)
 
+    @property
+    def nombre(self):
+        # Convierte fila 1 → A, 2 → B, etc.
+        letra_fila = chr(64 + self.fila)  # 65 es 'A' en ASCII
+        return f"{letra_fila}{self.columna}"
+
     class Meta:
         unique_together = ('evento', 'fila', 'columna')
 

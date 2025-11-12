@@ -1,0 +1,130 @@
+{% extends 'core.html' %}
+{% load static %}
+{% block content %}
+<section class="min-h-screen flex flex-col items-center justify-center p-6 text-white">
+
+    <!-- 🔹 Título -->
+    <h2 class="text-3xl font-bold mb-6 text-center">
+        {{ evento.nombre }} - {{ evento.fecha }} {{ evento.hora }}
+    </h2>
+
+    <!-- 🔹 Imágenes del evento y ubicación -->
+    <div class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-5xl mb-8">
+        {% if evento.imagen %}
+        <div class="w-full md:w-1/2">
+            <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}"
+                class="w-full h-64 object-cover rounded-lg border border-gray-700 shadow-lg">
+        </div>
+        {% endif %}
+        {% if evento.ubicacion.imagen %}
+        <div class="w-full md:w-1/2 relative">
+            <img src="{{ evento.ubicacion.imagen.url }}" alt="{{ evento.ubicacion.nombre }}"
+                class="w-full h-64 object-cover rounded-lg border border-gray-700 shadow-lg">
+            <div class="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-1 rounded text-sm">
+                {{ evento.ubicacion.nombre }} - Capacidad: {{ evento.ubicacion.capacidad }} asientos
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 🔹 Formulario de selección de asientos -->
+    <form method="POST" id="form-asientos" class="flex flex-col items-center w-full max-w-5xl">
+        {% csrf_token %}
+
+        <!-- 🔹 Grid centrado -->
+        <div class="w-full flex justify-center overflow-x-auto">
+            <div class="grid gap-[3px]"
+                style="grid-template-columns: repeat({{ columnas }}, minmax(0, 1fr)); max-width: 100%;">
+                {% for fila in seats_grid %}
+                {% for asiento in fila %}
+                {% if asiento %}
+                <button type="button"
+                    class="asiento aspect-square w-6 md:w-7 lg:w-8 rounded text-[10px] font-semibold flex items-center justify-center"
+                    data-id="{{ asiento.id }}" title="{{ asiento.nombre }}">
+                    {{ asiento.nombre }}
+                </button>
+                {% else %}
+                <div class="aspect-square w-6 md:w-7 lg:w-8 rounded bg-transparent"></div>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <input type="hidden" name="asientos_seleccionados" id="asientos_seleccionados">
+
+        <button type="submit"
+            class="mt-6 w-full md:w-1/2 py-2 bg-blue-600 hover:bg-blue-700 rounded font-semibold transition duration-200">
+            Confirmar compra
+        </button>
+    </form>
+
+    <!-- 🔹 Leyenda de colores -->
+    <div class="flex gap-4 mt-6 text-sm justify-center">
+        <div class="flex items-center gap-1">
+            <span class="w-4 h-4 bg-green-600 rounded block"></span> Disponible
+        </div>
+        <div class="flex items-center gap-1">
+            <span class="w-4 h-4 bg-red-700 rounded block"></span> Ocupado
+        </div>
+        <div class="flex items-center gap-1">
+            <span class="w-4 h-4 bg-yellow-500 rounded block"></span> Seleccionado
+        </div>
+    </div>
+</section>
+
+<!-- 🔹 Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const eventoId = "{{ evento.id }}";
+        const selectedInput = document.getElementById("asientos_seleccionados");
+        let seleccionados = [];
+
+        // Obtener asientos ocupados (IDs)
+        fetch(`/eventos/asientos_ocupados/${eventoId}/`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+            .then(res => res.json())
+            .then(data => {
+                const ocupados = data.ocupados.map(String);
+                document.querySelectorAll(".asiento").forEach(btn => {
+                    const id = btn.dataset.id;
+                    if (ocupados.includes(id)) {
+                        btn.classList.add("bg-red-700", "cursor-not-allowed", "opacity-70");
+                        btn.disabled = true;
+                    } else {
+                        btn.classList.add("bg-green-600");
+                    }
+                });
+            });
+
+        // Manejo selección de asientos (toggle)
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.asiento');
+            if (!btn) return;
+            if (btn.disabled) return;
+
+            const id = btn.dataset.id;
+            const idx = seleccionados.indexOf(id);
+            if (idx > -1) {
+                // deseleccionar
+                seleccionados.splice(idx, 1);
+                btn.classList.remove("bg-yellow-500");
+                btn.classList.add("bg-green-600");
+            } else {
+                // seleccionar
+                seleccionados.push(id);
+                btn.classList.remove("bg-green-600");
+                btn.classList.add("bg-yellow-500");
+            }
+            selectedInput.value = seleccionados.join(",");
+        });
+
+        // (Opcional) validar antes de submit: que haya al menos 1 asiento
+        document.getElementById('form-asientos').addEventListener('submit', function (e) {
+            if (!selectedInput.value.trim()) {
+                e.preventDefault();
+                alert('Selecciona al menos un asiento antes de continuar.');
+            }
+        });
+    });
+</script>
+{% endblock %}

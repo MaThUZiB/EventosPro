@@ -4,6 +4,8 @@ from . import views
 app_name = 'eventos'
 
 urlpatterns = [
+    path('seleccionar_asiento/<int:id>/', views.seleccionar_asiento, name='seleccionar_asiento'),
+    path('asientos_ocupados/<int:id>/', views.obtener_asientos_ocupados, name='obtener_asientos_ocupados'),
     path("horas_disponibles/", views.obtener_horas_ocupadas, name="obtener_horas_ocupadas"),
     path('buscar/', views.buscar_eventos, name='buscar_eventos'),
     path('buscar_eventos_ajax/', views.buscar_eventos_ajax, name='buscar_eventos_ajax'),
