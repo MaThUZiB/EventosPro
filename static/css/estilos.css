@@ -1,16 +1,12 @@
-#stripes {
-    background-image: repeating-linear-gradient(
-        45deg,
-        rgba(255,255,255,0.05),
-        rgba(255,255,255,0.05) 2px,
-        transparent 2px,
-        transparent 20px
-    );
-    position: fixed; /* Fijo para que siempre cubra todo el viewport */
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 0;
+/* Tarjetas de evento */
+.evento-card {
+    position: relative;       /* importante para que 'y' no afecte el layout */
+    will-change: transform;   /* optimiza animaciones */
+    transform: translate3d(0,0,0); /* fuerza render en GPU */
+    overflow: hidden;         /* opcional, si quieres mantener bordes redondeados limpios */
+}
+
+/* Contenedor grid */
+.grid {
+    overflow: hidden; /* opcional: evita que animaciones iniciales empujen otras tarjetas */
 }

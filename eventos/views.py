@@ -76,7 +76,7 @@ def listar_eventos(request):
 
 #DETALLE Eventos
 def detalle_evento(request, id):
-    evento = get_object_or_404(Evento, id=id)
+    evento = get_object_or_404(Evento.objects.select_related('ubicacion'), id=id)
     return render(request, 'eventos/detalle_evento.html', {
         'evento': evento,
     })
@@ -92,6 +92,17 @@ def mis_eventos(request):
 @login_required
 @user_passes_test(es_organizador)
 def editar_evento(request, id):
+    ubicaciones_qs = Ubicacion.objects.all()
+    ubicaciones = [
+        {
+            "id": u.id,
+            "nombre": u.nombre,
+            "direccion": u.direccion,
+            "capacidad": u.capacidad(),
+            "imagen": u.imagen.url if u.imagen else ""
+        }
+        for u in ubicaciones_qs
+    ]
     evento = get_object_or_404(Evento, id=id, usuario=request.user)
     if request.method == 'POST':
         form = EventoForm(request.POST, request.FILES, instance=evento)
@@ -103,7 +114,7 @@ def editar_evento(request, id):
             messages.error(request, "Error al actualizar correctamente")
     else:
         form = EventoForm(instance=evento)
-    return render(request, 'eventos/editar_evento.html', {'form': form, 'evento': evento})
+    return render(request, 'eventos/editar_evento.html', {'form': form, 'evento': evento, 'ubicaciones': ubicaciones})
 
 #ELIMINAR Evento
 @login_required
@@ -113,7 +124,7 @@ def eliminar_evento(request, id):
     if request.method == 'POST':
         evento.delete()
         messages.success(request, "Evento eliminado correctamente.")
-        return redirect('mis_eventos')
+        return redirect('eventos:mis_eventos')
     return render(request, 'eventos/eliminar_evento.html', {'evento': evento})
 
 #BUSQUEDA EVENTOS

@@ -2,7 +2,7 @@
 
 <!-- Sección de eventos -->
 <section class="relative pt-16 pb-20 bg-transparent text-gray-100">
-    <!-- 🔹 Degradado superior mucho más suave -->
+    <!-- 🔹 Degradado superior más suave -->
     <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black/10 via-black/5 to-transparent"></div>
 
     <div class="max-w-7xl mx-auto px-4 relative z-10">
@@ -15,8 +15,8 @@
         {% if eventos %}
         <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
             {% for evento in eventos %}
-            <div
-                class="bg-gray-800/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-blue-500/30 transition-transform duration-300 hover:-translate-y-1">
+            <div class="evento-card bg-gray-800/60 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden
+                        transition-all duration-300 cursor-pointer border border-gray-700/40">
                 {% if evento.imagen %}
                 <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}" class="w-full h-60 object-cover">
                 {% else %}
@@ -27,8 +27,8 @@
                     <h3 class="text-2xl font-bold mb-2 text-white">{{ evento.nombre }}</h3>
                     <p class="text-gray-400 text-sm mb-3">{{ evento.fecha }} — {{ evento.hora }}</p>
                     <p class="text-gray-300 mb-4 line-clamp-3">{{ evento.descripcion }}</p>
-                    {% if evento.precio %}
-                    <p class="text-blue-400 font-semibold mb-4">${{ evento.precio }}</p>
+                    {% if evento.precio_ticket %}
+                    <p class="text-blue-400 font-semibold mb-4">${{ evento.precio_ticket }}</p>
                     {% else %}
                     <p class="text-gray-300 font-semibold mb-4">Entrada gratuita</p>
                     {% endif %}
@@ -45,3 +45,41 @@
         {% endif %}
     </div>
 </section>
+
+<!-- GSAP CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Animación de entrada: tarjetas aparecen desde opacity 0 y ligeramente escaladas
+    gsap.from(".evento-card", {
+        y: 0,           
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power2.out"
+    });
+
+    // Hover dinámico
+    document.querySelectorAll(".evento-card").forEach(card => {
+        card.addEventListener("mouseenter", () => {
+            gsap.to(card, {
+                y: -8,
+                scale: 1.03,
+                duration: 0.1,
+                ease: "power2.out",
+                overwrite: "auto"
+            });
+        });
+
+        card.addEventListener("mouseleave", () => {
+            gsap.to(card, {
+                y: 0,
+                scale: 1,
+                duration: 0.1,
+                ease: "power2.inOut",
+                overwrite: "auto"
+            });
+        });
+    });
+});
+</script>
+

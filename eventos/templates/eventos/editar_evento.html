@@ -3,92 +3,218 @@
 {% load form_filters %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto my-10 p-8 rounded-2xl shadow-xl bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 border border-gray-400/40">
-    <h1 class="text-3xl font-bold mb-8 text-gray-900">
-        ✏️ Editar Evento: <span class="text-blue-600">{{ evento.nombre }}</span>
-    </h1>
+<section class="flex items-center justify-center min-h-[80vh] relative z-10">
+    <div
+        class="bg-gray-900/90 rounded-2xl shadow-2xl p-10 w-full max-w-4xl border border-gray-700 backdrop-blur-xl transition-all duration-300 hover:shadow-blue-800/40">
 
-    <form method="POST" action="{% url 'eventos:editar_evento' evento.id %}" enctype="multipart/form-data" class="space-y-6">
-        {% csrf_token %}
+        <h1 class="text-4xl font-bold mb-8 text-center text-white tracking-wide">
+            Editando Evento: <span class="text-blue-400">{{ evento.nombre }}</span>
+        </h1>
 
-        <!-- Nombre -->
-        <div>
-            <label class="text-gray-800 font-semibold block mb-2" for="{{ form.nombre.id_for_label }}">
-                {{ form.nombre.label }}
-            </label>
-            {{ form.nombre|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" }}
-        </div>
+        <form method="POST" enctype="multipart/form-data" id="evento-form"
+            class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% csrf_token %}
 
-        <!-- Fecha y hora -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label class="text-gray-800 font-semibold block mb-2" for="{{ form.fecha.id_for_label }}">
-                    {{ form.fecha.label }}
+            {% for field in form %}
+            {% if field.name != "hora" %}
+            <div class="field-item opacity-0 translate-y-3 col-span-1">
+                <label for="{{ field.id_for_label }}" class="block text-gray-200 font-medium mb-2">
+                    {{ field.label }}
                 </label>
-                {{ form.fecha|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500" }}
+                {{ field }}
+                {% if field.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+                {% endif %}
             </div>
-            <div>
-                <label class="text-gray-800 font-semibold block mb-2" for="{{ form.hora.id_for_label }}">
-                    {{ form.hora.label }}
-                </label>
-                {{ form.hora|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-blue-500" }}
-            </div>
-        </div>
-
-        <!-- Ubicación -->
-        <div>
-            <label class="text-gray-800 font-semibold block mb-2" for="{{ form.ubicacion.id_for_label }}">
-                {{ form.ubicacion.label }}
-            </label>
-            {{ form.ubicacion|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-indigo-500" }}
-        </div>
-
-        <!-- Descripción -->
-        <div>
-            <label class="text-gray-800 font-semibold block mb-2" for="{{ form.descripcion.id_for_label }}">
-                {{ form.descripcion.label }}
-            </label>
-            {{ form.descripcion|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-indigo-500" }}
-        </div>
-
-        <!-- Precio y stock -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label class="text-gray-800 font-semibold block mb-2" for="{{ form.precio.id_for_label }}">
-                    {{ form.precio.label }}
-                </label>
-                {{ form.precio|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-green-500" }}
-            </div>
-            <div>
-                <label class="text-gray-800 font-semibold block mb-2" for="{{ form.stock.id_for_label }}">
-                    {{ form.stock.label }}
-                </label>
-                {{ form.stock|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-2 focus:ring-green-500" }}
-            </div>
-        </div>
-
-        <!-- Imagen -->
-        <div>
-            <label class="text-gray-800 font-semibold block mb-2" for="{{ form.imagen.id_for_label }}">
-                {{ form.imagen.label }}
-            </label>
-            {{ form.imagen|add_class:"w-full p-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900" }}
-        </div>
-
-        <!-- Botones -->
-        <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
-            <button type="submit"
-                class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg text-white font-medium transition transform hover:scale-105 shadow-md">
-                💾 Guardar Cambios
-            </button>
-
-            {% if request.user == evento.usuario %}
-            <a href="{% url 'eventos:eliminar_evento' evento.id %}"
-                class="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 rounded-lg text-white font-medium transition transform hover:scale-105 shadow-md text-center">
-                🗑️ Eliminar Evento
-            </a>
             {% endif %}
+            {% endfor %}
+
+            <!-- Selector de Horas -->
+            <div class="col-span-1 md:col-span-2">
+                <label class="block text-gray-200 font-medium mb-3">Selecciona una hora disponible</label>
+                <input type="hidden" name="hora" id="id_hora">
+
+                <div id="horas-container" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
+                    <!-- Las horas se cargarán dinámicamente -->
+                </div>
+
+                <p id="sin-horas" class="text-gray-400 mt-3 hidden">Selecciona ubicación y fecha para ver horarios
+                    disponibles.</p>
+            </div>
+
+            <div class="col-span-full">
+                <button type="submit"
+                    class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition duration-200">
+                    Confirmar
+                </button>
+            </div>
+        </form>
+        <div class="col-span-full py-6">
+            <a href="{% url 'eventos:eliminar_evento' evento.id %}"
+                class="block w-full py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition duration-200 text-center">
+                Eliminar
+            </a>
         </div>
-    </form>
-</div>
+
+        <!-- Info de la ubicación -->
+        <div id="ubicacionInfo" class="hidden mt-10 text-gray-200 border-t border-gray-700 pt-6">
+            <img id="ubicacionImagen" src="" alt="Imagen de ubicación"
+                class="rounded-xl mb-4 hidden w-full h-64 object-cover shadow-lg border border-gray-700">
+            <h3 id="ubicacionNombre" class="text-2xl font-semibold mb-2"></h3>
+            <p id="ubicacionDireccion" class="text-gray-400"></p>
+            <p id="ubicacionCapacidad" class="text-gray-400"></p>
+        </div>
+
+        <div class="mt-8 text-center text-gray-400">
+            <a href="{% url 'eventos:mis_eventos' %}" class="text-blue-400 hover:text-blue-300 font-medium">
+                Volver a eventos
+            </a>
+        </div>
+    </div>
+</section>
+
+{{ ubicaciones|json_script:"ubicaciones-data" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Animación de aparición de campos
+    gsap.to(".field-item", {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        stagger: 0.1,
+        ease: "power2.out"
+    });
+
+    const ubicacionesData = JSON.parse(document.getElementById("ubicaciones-data").textContent);
+    const selectUbicacion = document.getElementById("id_ubicacion");
+    const fechaInput = document.getElementById("id_fecha");
+    const ubicacionInfo = document.getElementById("ubicacionInfo");
+    const img = document.getElementById("ubicacionImagen");
+    const nombre = document.getElementById("ubicacionNombre");
+    const direccion = document.getElementById("ubicacionDireccion");
+    const capacidad = document.getElementById("ubicacionCapacidad");
+    const horasContainer = document.getElementById("horas-container");
+    const inputHora = document.getElementById("id_hora");
+    const sinHoras = document.getElementById("sin-horas");
+
+    // Fecha mínima hoy
+    if (fechaInput) {
+        const hoy = new Date().toISOString().split("T")[0];
+        fechaInput.setAttribute("min", hoy);
+    }
+
+    // Mostrar info de ubicación seleccionada
+    function actualizarUbicacion() {
+        const id = selectUbicacion.value;
+        const data = ubicacionesData.find(u => u.id == id);
+
+        if (data) {
+            img.src = data.imagen || "";
+            nombre.textContent = data.nombre;
+            direccion.textContent = data.direccion ? "📍 " + data.direccion : "";
+            capacidad.textContent = "Capacidad: " + data.capacidad + " personas";
+            img.classList.toggle("hidden", !data.imagen);
+            ubicacionInfo.classList.remove("hidden");
+            gsap.fromTo(ubicacionInfo, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 });
+        } else {
+            ubicacionInfo.classList.add("hidden");
+        }
+
+        cargarHoras();
+    }
+
+    selectUbicacion?.addEventListener("change", actualizarUbicacion);
+    fechaInput?.addEventListener("change", cargarHoras);
+
+    // Hora actual del evento (para permitir re-seleccionarla)
+    const horaActual = "{{ evento.hora|default:'' }}";
+
+    // Función para cargar horas disponibles
+    function cargarHoras() {
+        const ubicacionId = selectUbicacion.value;
+        const fecha = fechaInput.value;
+        horasContainer.innerHTML = "";
+        inputHora.value = "";
+
+        if (!ubicacionId || !fecha) {
+            sinHoras.classList.remove("hidden");
+            sinHoras.textContent = "Selecciona ubicación y fecha para ver horarios disponibles.";
+            return;
+        }
+
+        sinHoras.classList.add("hidden");
+
+        fetch(`/eventos/horas_disponibles/?ubicacion=${ubicacionId}&fecha=${fecha}`, {
+            headers: { "X-Requested-With": "XMLHttpRequest", "Accept": "application/json" },
+            credentials: "same-origin"
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Respuesta no OK");
+            return response.json();
+        })
+        .then(data => {
+            const ocupadas = data.ocupadas || [];
+            const todasLasHoras = [
+                "08:00", "09:00", "10:00", "11:00", "12:00",
+                "13:00", "14:00", "15:00", "16:00", "17:00",
+                "18:00", "19:00", "20:00", "21:00", "22:00"
+            ];
+
+            todasLasHoras.forEach(hora => {
+                const ocupado = ocupadas.includes(hora) && hora !== horaActual; // permitir la hora actual
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.textContent = hora;
+
+                if (ocupado) {
+                    btn.className = "p-2 rounded-lg text-white font-semibold transition bg-red-700 cursor-not-allowed opacity-80";
+                    btn.disabled = true;
+                } else {
+                    btn.className = "p-2 rounded-lg text-white font-semibold transition bg-blue-600 hover:bg-blue-700";
+
+                    // Marcar la hora actual como seleccionada
+                    if (hora === horaActual) {
+                        btn.classList.remove("bg-blue-600", "hover:bg-blue-700");
+                        btn.classList.add("bg-green-600");
+                        inputHora.value = hora;
+                    }
+
+                    btn.addEventListener("click", () => {
+                        document.querySelectorAll("#horas-container button").forEach(b => {
+                            if (!b.disabled) {
+                                b.classList.remove("bg-green-600");
+                                b.classList.add("bg-blue-600");
+                            }
+                        });
+                        btn.classList.remove("bg-blue-600", "hover:bg-blue-700");
+                        btn.classList.add("bg-green-600");
+                        inputHora.value = hora;
+                    });
+                }
+
+                horasContainer.appendChild(btn);
+            });
+
+            if (ocupadas.length === todasLasHoras.length && !horaActual) {
+                sinHoras.classList.remove("hidden");
+                sinHoras.textContent = "No hay horarios disponibles para esta fecha.";
+            } else {
+                sinHoras.classList.add("hidden");
+            }
+        })
+        .catch(error => {
+            console.error("ERROR FETCH:", error);
+            sinHoras.classList.remove("hidden");
+            sinHoras.textContent = "Error al cargar horarios.";
+        });
+    }
+
+    // Inicializar al cargar la página si ya hay ubicación seleccionada
+    if (selectUbicacion?.value) {
+        actualizarUbicacion();
+    }
+});
+</script>
+
 {% endblock %}
