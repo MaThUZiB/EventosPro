@@ -71,3 +71,6 @@ def home(request):
     return render(request, "usuarios/home.html", {
         'eventos': evento
     })
+
+def acerca(request):
+    return render(request, 'acerca.html')

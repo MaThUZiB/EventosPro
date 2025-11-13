@@ -11,13 +11,13 @@
 
                 {% if request.user.is_authenticated %}
                     {% if request.user.tipo_usuario == 'cliente' %}
-                        <a href=" " class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
+                        <a href="{% url 'compra:mis_compras' %}" class="hover:text-blue-400 transition duration-300">Mis Entradas</a>
                     {% elif request.user.tipo_usuario == 'organizador' %}
-                        <a href=" " class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
+                        <a href="{% url 'compra:mis_compras' %} " class="hover:text-blue-400 transition duration-300">Mis Entradas</a>
                         <a href="{% url 'eventos:mis_eventos' %}" class="hover:text-blue-400 transition duration-300">Mis Eventos</a>
                         <a href="{% url 'eventos:crear_evento' %}" class="hover:text-blue-400 transition duration-300">Crear Evento</a>
                     {% elif request.user.tipo_usuario == 'administrador' %}
-                        <a href=" " class="hover:text-blue-400 transition duration-300">Mis Tickets</a>
+                        <a href="{% url 'compra:mis_compras' %} " class="hover:text-blue-400 transition duration-300">Mis Entradas</a>
                         <a href="{% url 'admin:index' %}" class="hover:text-blue-400 transition duration-300">Admin Panel</a>
                     {% endif %}
                 {% endif %}

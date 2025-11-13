@@ -2,104 +2,114 @@
 
 {% block content %}
 <section class="min-h-screen flex items-center justify-center px-6 py-12">
-    <div class="w-full max-w-4xl border border-gray-700 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md bg-gray-800/50">
+    <div class="w-full max-w-4xl relative rounded-3xl shadow-2xl overflow-hidden bg-white/5 backdrop-blur-3xl border border-white/20">
 
-        <!-- Imagen del evento con overlay -->
-        {% if evento.imagen %}
-        <div class="relative group">
-            <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}"
-                 class="w-full h-64 object-cover transform transition-transform duration-700 group-hover:scale-105">
-            <div class="absolute inset-0 bg-black/40 flex items-end p-6">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-white drop-shadow-lg tracking-wide">
-                    {{ evento.nombre }}
-                </h1>
+        <!-- 🔹 Fondo de partículas tipo cristal dentro del card -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="w-full h-full bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] 
+                        bg-[length:10px_10px] animate-pulse-slow rounded-3xl"></div>
+        </div>
+
+        <!-- Imagen del evento con overlay (fuera del div animado) -->
+        <div class="relative">
+            {% if evento.imagen %}
+            <div class="group">
+                <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}"
+                     class="w-full h-64 object-cover transform transition-transform duration-700 group-hover:scale-105 rounded-t-3xl">
+                <div class="absolute inset-0 bg-black/40 flex items-end p-6">
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-white drop-shadow-lg tracking-wide relative z-10">
+                        {{ evento.nombre }}
+                    </h1>
+                </div>
             </div>
-        </div>
-        {% else %}
-        <div class="w-full h-64 bg-gray-700/50 flex items-center justify-center text-gray-300 text-xl font-medium">
-            Sin imagen disponible
-        </div>
-        {% endif %}
-
-        <!-- Contenido del evento -->
-        <!-- Contenido del evento -->
-<div class="p-8 space-y-8 evento-texto">
-
-    <!-- Fecha y Hora -->
-    <div class="grid md:grid-cols-2 gap-6">
-        <div class="p-4 bg-gray-700 rounded-xl border border-gray-700 shadow-md hover:shadow-blue-500/20 transition">
-            <h2 class="text-lg font-semibold text-white mb-2">📅 Fecha y Hora</h2>
-            <p class="text-gray-300 text-sm md:text-base">{{ evento.fecha }} a las {{ evento.hora }}</p>
-        </div>
-
-        <!-- Ubicación con imagen -->
-        <div class="p-4 bg-gray-700 rounded-xl border border-gray-700 shadow-md hover:shadow-green-500/20 transition flex flex-col md:flex-row items-start gap-4">
-            {% if evento.ubicacion.imagen %}
-            <img src="{{ evento.ubicacion.imagen.url }}" alt="{{ evento.ubicacion.nombre }}"
-                 class="w-full md:w-40 h-28 object-cover rounded-lg shadow-lg transform transition-transform duration-500 hover:scale-105">
+            {% else %}
+            <div class="w-full h-64 bg-gray-700/50 flex items-center justify-center text-gray-300 text-xl font-medium rounded-t-3xl">
+                Sin imagen disponible
+            </div>
             {% endif %}
-            <div>
-                <h3 class="text-white font-semibold text-lg">{{ evento.ubicacion.nombre }}</h3>
-                {% if evento.ubicacion.direccion %}
-                <p class="text-gray-300 text-sm">{{ evento.ubicacion.direccion }}</p>
-                {% endif %}
+        </div>
+
+        <!-- Contenido del evento (animado) -->
+        <div class="p-8 space-y-8 evento-texto relative z-10">
+
+            <!-- Fecha y Hora con imagen de ubicación al lado -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="p-4 bg-gray-700/70 rounded-xl border border-gray-700 shadow-md hover:shadow-blue-500/30 transition flex items-center gap-4">
+                    {% if evento.ubicacion.imagen %}
+                    <img src="{{ evento.ubicacion.imagen.url }}" alt="{{ evento.ubicacion.nombre }}"
+                         class="w-24 h-24 object-cover rounded-lg shadow-lg transform transition-transform duration-500 hover:scale-105">
+                    {% endif %}
+                    <div>
+                        <h2 class="text-lg font-semibold text-white mb-1">📅 Fecha y Hora</h2>
+                        <p class="text-gray-300 text-sm md:text-base">{{ evento.fecha }} a las {{ evento.hora }}</p>
+                        {% if evento.ubicacion.nombre %}
+                        <p class="text-gray-400 text-sm mt-2 font-medium">📍 {{ evento.ubicacion.nombre }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Dirección -->
+                <div class="p-4 bg-gray-700/70 rounded-xl border border-gray-700 shadow-md hover:shadow-green-500/30 transition flex flex-col justify-center">
+                    {% if evento.ubicacion.direccion %}
+                    <h3 class="text-lg font-semibold text-white mb-1">Dirección</h3>
+                    <p class="text-gray-300 text-sm md:text-base">{{ evento.ubicacion.direccion }}</p>
+                    {% endif %}
+                </div>
             </div>
+
+            <!-- Descripción -->
+            <div class="p-4 bg-gray-700/70 rounded-xl border border-gray-700 shadow-md hover:shadow-purple-500/30 transition">
+                <h2 class="text-lg font-semibold text-white mb-2">📝 Descripción</h2>
+                <p class="text-gray-300 leading-relaxed">{{ evento.descripcion }}</p>
+            </div>
+
+            <!-- Estado -->
+            <div class="flex items-center gap-3">
+                <h2 class="text-lg font-semibold text-white">💡 Estado:</h2>
+                <span class="px-3 py-1 rounded-full text-sm font-medium
+                    {% if evento.estado == 'pendiente' %}bg-yellow-500/20 text-yellow-400
+                    {% elif evento.estado == 'publicado' %}bg-green-500/20 text-green-400
+                    {% elif evento.estado == 'rechazado' %}bg-red-500/20 text-red-400
+                    {% else %}bg-gray-600 text-gray-300{% endif %}">
+                    {{ evento.estado|title }}
+                </span>
+            </div>
+
+            <!-- Precio -->
+            <div class="p-4 bg-gray-700/70 rounded-xl border border-gray-700 shadow-md hover:shadow-yellow-500/30 transition flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-white">💵 Precio del ticket:</h2>
+                <p class="text-green-400 font-bold text-xl md:text-2xl">${{ evento.precio_ticket }} CLP</p>
+            </div>
+        </div>
+
+        <!-- Botones centrados -->
+        <div class="flex flex-wrap gap-4 justify-center items-center mt-4 py-4 rounded-xl shadow-inner relative z-10">
+            <a href="{% url 'home' %}" class="px-6 py-3 bg-gray-700/80 hover:bg-gray-600/90 text-gray-200 rounded-lg transition transform hover:-translate-y-1 hover:scale-105 shadow-md">
+                ← Volver
+            </a>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'eventos:seleccionar_asiento' evento.id %}" class="px-6 py-3 bg-green-500/90 hover:bg-green-600/95 text-white rounded-lg transition transform hover:-translate-y-1 hover:scale-105 shadow-md">
+                🎟️ Comprar entrada
+            </a>
+            {% else %}
+            <a href="{% url 'iniciar_sesion' %}" class="px-6 py-3 bg-green-500/90 hover:bg-green-600/95 text-white rounded-lg transition transform hover:-translate-y-1 hover:scale-105 shadow-md">
+                🎟️ Comprar entrada
+            </a>
+            {% endif %}
         </div>
     </div>
 
-    <!-- Descripción -->
-    <div class="p-4 bg-gray-700 rounded-xl border border-gray-700 shadow-md hover:shadow-purple-500/20 transition">
-        <h2 class="text-lg font-semibold text-white mb-2">📝 Descripción</h2>
-        <p class="text-gray-300 leading-relaxed">{{ evento.descripcion }}</p>
-    </div>
-
-    <!-- Estado -->
-    <div class="flex items-center gap-3">
-        <h2 class="text-lg font-semibold text-white">💡 Estado:</h2>
-        <span class="
-            px-3 py-1 rounded-full text-sm font-medium
-            {% if evento.estado == 'pendiente' %}bg-yellow-500/20 text-yellow-400
-            {% elif evento.estado == 'publicado' %}bg-green-500/20 text-green-400
-            {% elif evento.estado == 'rechazado' %}bg-red-500/20 text-red-400
-            {% else %}bg-gray-600 text-gray-300{% endif %}">
-            {{ evento.estado|title }}
-        </span>
-    </div>
-
-    <!-- Precio -->
-    <div class="p-4 bg-gray-700 rounded-xl border border-gray-700 shadow-md hover:shadow-yellow-500/30 transition flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-white">💵 Precio del ticket:</h2>
-        <p class="text-green-400 font-bold text-xl md:text-2xl">${{ evento.precio_ticket }} CLP</p>
-    </div>
-</div>
-
-<!-- Botones centrados -->
-<div class="flex flex-wrap gap-4 justify-center items-center mt-4 py-4 rounded-xl shadow-inner bg-gray-900">
-    <a href="{% url 'home' %}" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition transform hover:-translate-y-1 hover:scale-105 shadow-md">
-        ← Volver
-    </a>
-    {% if request.user.is_authenticated %}
-    <a href="{% url 'eventos:seleccionar_asiento' evento.id %}" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition transform hover:-translate-y-1 hover:scale-105 shadow-md">
-        🎟️ Comprar entrada
-    </a>
-    {% else %}
-    <a href="{% url 'iniciar_sesion' %}" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition transform hover:-translate-y-1 hover:scale-105 shadow-md">
-        🎟️ Comprar entrada
-    </a>
-    {% endif %}
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    // Solo animar los textos dentro del detalle del evento
-    gsap.from(".evento-texto h2, .evento-texto h3, .evento-texto p, .evento-texto span", {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        stagger: 0.05,
-        ease: "power3.out"
+    <!-- Animaciones GSAP solo para el contenido textual -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        gsap.from(".evento-texto", {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            ease: "power3.out"
+        });
     });
-});
-</script>
-
+    </script>
+</section>
 {% endblock %}

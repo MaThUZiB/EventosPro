@@ -1,0 +1,60 @@
+{% extends 'core.html' %}
+{% block content %}
+
+<section class="min-h-screen text-white py-12 px-6">
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center text-blue-400 drop-shadow-lg">Mis Entradas</h1>
+
+        {% if compras %}
+        <div class="space-y-6">
+            {% for compra in compras %}
+            <div class="relative cc-card bg-white/5 backdrop-blur-3xl border border-white/20 rounded-2xl shadow-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 overflow-hidden">
+
+                <!-- 🔹 Fondo tipo bokeh dentro del card -->
+                <div class="absolute inset-0 pointer-events-none">
+                    <div class="w-full h-full bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] 
+                                bg-[length:10px_10px] animate-pulse-slow rounded-2xl"></div>
+                </div>
+
+                <div class="relative z-10">
+                    <h2 class="text-xl font-semibold text-white">Compra #{{ compra.id }} - {{ compra.evento.nombre }}</h2>
+                    <p class="text-gray-300">Evento: {{ compra.evento.nombre }}</p>
+                    <p class="text-green-400 font-semibold">Total: ${{ compra.total }}</p>
+                    <p class="text-gray-400 text-sm">Fecha: {{ compra.fecha|date:"d M Y H:i" }}</p>
+                </div>
+
+                <div class="flex gap-3 relative z-10">
+                    <a href="{% url 'compra:detalle_compra' compra.id %}"
+                        class="bg-blue-500/90 hover:bg-blue-600/95 px-5 py-2 rounded-2xl font-semibold shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
+                        Ver detalles
+                    </a>
+                    <a href="{% url 'compra:descargar_entrada' compra.id %}"
+                        class="bg-green-500/90 hover:bg-green-600/95 px-5 py-2 rounded-2xl font-semibold shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
+                        Descargar
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400 text-center mt-8">No has realizado compras aún.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- 🌀 Animaciones GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    gsap.from(".cc-card", {
+        opacity: 0,
+        y: 40,
+        scale: 0.95,
+        duration: 0.7,
+        stagger: 0.2,
+        ease: "power3.out"
+    });
+});
+</script>
+
+{% endblock %}

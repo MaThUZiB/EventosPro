@@ -1,0 +1,82 @@
+{% extends 'core.html' %}
+{% block content %}
+
+<section class="min-h-screen text-white py-12 px-6 flex items-center justify-center relative">
+
+    <div
+        class="cc-card bg-white/5 backdrop-blur-3xl border border-white/20 rounded-3xl p-10 shadow-2xl max-w-3xl w-full relative overflow-hidden">
+
+        <!-- 🔹 Fondo difuminado tipo bokeh / cristal dinámico dentro del card -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="w-full h-full bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] 
+                  bg-[length:10px_10px] animate-pulse-slow rounded-3xl"></div>
+        </div>
+
+        <!-- 🧾 Datos generales -->
+        <h2 class="cc-title text-3xl font-bold mb-6 text-center text-blue-400 drop-shadow-lg relative z-10">Compra #{{ compra.id }}</h2>
+
+        <div class="cc-meta space-y-2 mb-8 text-gray-200 text-center relative z-10">
+            <p><strong>Evento:</strong> <span class="text-white font-semibold">{{ compra.evento.nombre }}</span></p>
+            <p><strong>Ubicación:</strong> {{ compra.evento.ubicacion }}</p>
+            <p><strong>Fecha del evento:</strong> {{ compra.evento.fecha }}</p>
+            <p><strong>Total:</strong> <span class="text-green-400 font-bold">${{ compra.total }}</span></p>
+            <p><strong>Método de pago:</strong> <span class="text-yellow-300">{{ compra.pago.metodo }} ({{ compra.pago.estado }})</span></p>
+        </div>
+
+        <!-- 🖼️ Imagen del evento -->
+        {% if compra.evento.imagen %}
+        <div class="cc-img flex justify-center mb-8 relative z-10">
+            <img src="{{ compra.evento.imagen.url }}" alt="{{ compra.evento.nombre }}"
+                class="rounded-2xl shadow-xl w-full max-w-md border border-white/10 transition-transform duration-500 hover:scale-105 hover:rotate-1">
+        </div>
+        {% endif %}
+
+        <!-- 🎟️ Asientos -->
+        <div class="cc-asientos-box relative z-10">
+            <h3 class="cc-subtitle text-xl font-semibold mb-4 text-center text-gray-300">Asientos seleccionados</h3>
+
+            {% if asientos %}
+            <div class="flex flex-wrap gap-3 justify-center mb-8">
+                {% for asiento in asientos %}
+                <div
+                    class="bg-green-600/80 hover:bg-green-700 px-5 py-2 rounded-xl shadow-lg text-sm font-semibold text-white transition-transform transform hover:scale-110 hover:-translate-y-1">
+                    🎟️ {{ asiento }}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-400 text-center mb-8">No se encontraron asientos asociados.</p>
+            {% endif %}
+        </div>
+
+        <!-- 🔙 Botones -->
+        <div class="cc-buttons-box flex justify-center gap-4 mt-4 relative z-10">
+            <a href="{% url 'compra:descargar_entrada' compra.id %}"
+                class="bg-green-500/90 hover:bg-green-600/95 px-6 py-3 rounded-2xl font-semibold shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
+                📥 Descargar PDF
+            </a>
+            <a href="{% url 'compra:mis_compras' %}"
+                class="bg-gray-500/80 hover:bg-gray-600/90 px-6 py-3 rounded-2xl font-semibold shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
+                Volver
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- 🌀 GSAP Animaciones -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 0.7 } });
+
+        tl.from(".cc-card", { opacity: 0, y: 60, scale: 0.9 });
+        tl.from(".cc-title", { opacity: 0, y: 20 }, "-=0.3");
+        tl.from(".cc-meta", { opacity: 0, y: 15, stagger: 0.1 }, "-=0.4");
+        tl.from(".cc-img img", { opacity: 0, scale: 0.95, y: 20 }, "-=0.4");
+        tl.from(".cc-asientos-box div", { opacity: 0, y: 20, stagger: 0.1 }, "-=0.3");
+        tl.from(".cc-buttons-box a", { opacity: 0, y: 30, scale: 0.9, ease: "back.out(1.7)", stagger: 0.1 }, "-=0.2");
+    });
+</script>
+
+{% endblock %}

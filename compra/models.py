@@ -1,6 +1,6 @@
 from django.db import models
 from usuarios.models import Usuario
-from eventos.models import AsientoEvento
+from eventos.models import AsientoEvento ,Evento
 
 class Compra(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
@@ -8,6 +8,15 @@ class Compra(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=0)
     asientos_nombres = models.CharField(max_length=255, null=True, blank=True)
     evento_id = models.PositiveIntegerField(null=True, blank=True)
+
+    @property
+    def evento(self):
+        if self.evento_id:
+            try:
+                return Evento.objects.get(id=self.evento_id)
+            except Evento.DoesNotExist:
+                return None
+        return None
 
     def __str__(self):
         return f"Compra #{self.id} - {self.usuario.username}"
