@@ -1,9 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from usuarios.validators import validar_rut
 # Create your models here.
+
 class Usuario(AbstractUser):
-    rut = models.CharField(max_length=12, unique=True)
+    rut = models.CharField(max_length=12, unique=True, validators=[validar_rut])
     telefono = models.CharField(max_length=15, blank=True)
     tipo_usuario = models.CharField(max_length=50, blank=True, choices=[
         ('administrador', 'Administrador'),

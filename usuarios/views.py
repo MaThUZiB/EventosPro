@@ -34,7 +34,7 @@ def registrar_usuario(request):
         print(request.POST)
         return render(request, "usuarios/registrar_usuario.html", {
             "form": form,
-            "error": "Datos inválidos en el formulario."
+            "error": form
         })
 
 
