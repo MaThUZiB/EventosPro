@@ -12,8 +12,9 @@ from compra.models import Compra, CompraDetalle, Pago
 # Decorador
 def es_organizador(user):
     return (
-        user.is_authenticated and getattr(user, "tipo_usuario", None) == "organizador"
+        user.is_authenticated and getattr(user, "tipo_usuario", None) in ["organizador", "administrador"]
     )
+
 
 
 # ---------------------------

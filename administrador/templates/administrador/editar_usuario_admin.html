@@ -1,0 +1,41 @@
+{% extends "administrador/admin_core.html" %}
+
+{% block content %}
+<!-- Contenedor principal animado -->
+<div class="admin-container">
+
+    <h1 class="text-2xl font-bold text-white mb-6">Editar Usuario: {{ usuario.username }}</h1>
+
+    <!-- Div que encapsula el formulario para animación -->
+    <div class="admin-table-wrapper bg-gray-900 p-6 rounded-xl border border-gray-800 w-full max-w-xl mx-auto shadow-xl">
+
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button class="w-full bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold">
+                Guardar Cambios
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<!-- GSAP Animación del div completo -->
+<script>
+    gsap.from(".admin-table-wrapper", {
+        opacity: 0,
+        y: 30,
+        scale: 0.98,
+        duration: 0.8,
+        ease: "power2.out"
+    });
+
+    gsap.from("h1", {
+        opacity: 0,
+        y: -20,
+        duration: 0.7,
+        ease: "power2.out"
+    });
+</script>
+{% endblock %}

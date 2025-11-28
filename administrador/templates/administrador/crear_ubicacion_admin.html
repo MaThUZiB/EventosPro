@@ -1,0 +1,52 @@
+{% extends "administrador/admin_core.html" %}
+
+{% block content %}
+<!-- Contenedor principal animado -->
+<div class="admin-container flex justify-center mt-10">
+
+    <div class="w-full max-w-lg">
+
+        <h1 class="text-2xl font-bold text-gray-200 mb-6 text-center">Crear Nueva Ubicación</h1>
+
+        <!-- Div que encapsula el formulario para animación -->
+        <div class="admin-table-wrapper bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-lg">
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div>
+                        <label class="block text-gray-300 font-medium mb-1">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="text-red-400 text-sm mt-1">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button class="mt-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full">
+                    Crear Ubicación
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- GSAP Animación del div completo -->
+<script>
+    gsap.from(".admin-table-wrapper", {
+        opacity: 0,
+        y: 30,
+        scale: 0.98,
+        duration: 0.8,
+        ease: "power2.out"
+    });
+
+    gsap.from("h1", {
+        opacity: 0,
+        y: -20,
+        duration: 0.7,
+        ease: "power2.out"
+    });
+</script>
+{% endblock %}

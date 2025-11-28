@@ -1,0 +1,85 @@
+{% extends "administrador/admin_core.html" %}
+
+{% block content %}
+<!-- Contenedor principal animado -->
+<div class="admin-container">
+
+    <h1 class="text-2xl font-bold text-gray-200 mb-6">Compras Realizadas</h1>
+
+    <!-- Div que encapsula la tabla para animación general -->
+    <div class="admin-table-wrapper bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg overflow-x-auto">
+
+        <table class="min-w-full divide-y divide-gray-800">
+            <thead>
+                <tr class="bg-gray-800/50">
+                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-400">ID Compra</th>
+                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-400">Usuario</th>
+                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-400">Evento</th>
+                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-400">Asientos</th>
+                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-400">Total</th>
+                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-400">Fecha</th>
+                    <th class="px-4 py-3 text-left text-sm font-medium text-gray-400">Estado Pago</th>
+                    <th class="px-4 py-3 text-center text-sm font-medium text-gray-400">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-800">
+                {% for c in compras %}
+                <tr class="hover:bg-gray-800/40 transition">
+                    <td class="px-4 py-3 text-gray-400">{{ c.id }}</td>
+                    <td class="px-4 py-3 text-white font-semibold">{{ c.usuario.username }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ c.evento.nombre }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ c.asientos_nombres }}</td>
+                    <td class="px-4 py-3 text-gray-300">${{ c.total }}</td>
+                    <td class="px-4 py-3 text-gray-300">{{ c.fecha|date:"d/m/Y H:i" }}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-3 py-1 text-xs rounded-full 
+                            {% if c.pago.estado == 'aprobado' %} bg-green-600 text-white
+                            {% elif c.pago.estado == 'pendiente' %} bg-yellow-600 text-white
+                            {% else %} bg-red-600 text-white
+                            {% endif %}">
+                            {{ c.pago.estado|title }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-center space-x-3">
+                        <a href="{% url 'administrador:ver_compra_admin' c.id %}"
+                            class="px-3 py-1 text-sm rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition">
+                            Ver
+                        </a>
+                        <a href="{% url 'administrador:eliminar_compra_admin' c.id %}"
+                            class="px-3 py-1 text-sm rounded-lg bg-red-600 hover:bg-red-500 text-white transition"
+                            onclick="return confirm('¿Eliminar esta compra?');">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="px-4 py-6 text-center text-gray-500">
+                        No hay compras registradas.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- GSAP Animación del div completo -->
+<script>
+    gsap.from(".admin-table-wrapper", {
+        opacity: 0,
+        y: 30,
+        scale: 0.98,
+        duration: 0.8,
+        ease: "power2.out"
+    });
+
+    gsap.from("h1", {
+        opacity: 0,
+        y: -20,
+        duration: 0.7,
+        ease: "power2.out"
+    });
+</script>
+{% endblock %}

@@ -2,7 +2,6 @@ from django.urls import path
 from .views import *
 
 
-
 urlpatterns = [
     path('acerca/', acerca, name='acerca'),
     path('', home, name='home'),

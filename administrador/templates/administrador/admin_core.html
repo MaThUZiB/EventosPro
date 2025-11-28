@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador - EventosPro</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://kit.fontawesome.com/07c96a5d62.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body class="min-h-screen flex flex-col bg-gray-950 text-gray-100">
+
+
+    <!-- NAVBAR -->
+    <nav class="bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-gray-800 fixed w-full z-20 admin-navbar">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+
+            <!-- Logo / Dashboard -->
+            <a href="{% url 'administrador:admin_inicio' %}" class="text-2xl font-bold text-blue-400 hover:text-blue-300 transition">
+                ⚙️ AdminPanel
+            </a>
+
+            <!-- Navegación principal -->
+            <div class="hidden md:flex items-center space-x-10">
+                <a href="{% url 'administrador:listar_usuarios_admin' %}" class="text-gray-400 hover:text-white transition cursor-pointer">Usuarios</a>
+                <a href="{% url 'administrador:listar_eventos_admin' %}" class="text-gray-400 hover:text-white transition cursor-pointer">Eventos</a>
+                <a href="{% url 'administrador:listar_compras_admin' %}" class="text-gray-400 hover:text-white transition cursor-pointer">Compras</a>
+                <a href="{% url 'administrador:listar_ubicaciones_admin' %}" class="text-gray-400 hover:text-white transition cursor-pointer">Ubicaciones</a>
+            </div>
+
+            <!-- Volver a modo cliente -->
+            <a href="{% url 'home' %}"
+               class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition hidden md:block">
+                Volver al Sitio Cliente
+            </a>
+
+            <!-- Botón móvil -->
+            <button id="menu-admin" class="md:hidden text-gray-300 hover:text-white">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menú móvil -->
+        <div id="admin-mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700">
+            <div class="px-6 py-4 space-y-3 text-gray-300">
+                <a href="{% url 'administrador:listar_usuarios_admin' %}" class="block hover:text-white transition cursor-pointer">Usuarios</a>
+                <a href="{% url 'administrador:listar_eventos_admin' %}" class="block hover:text-white transition cursor-pointer">Eventos</a>
+                <a href="{% url 'administrador:listar_compras_admin' %}" class="block hover:text-white transition cursor-pointer">Compras</a>
+                <a href="{% url 'administrador:listar_ubicaciones_admin' %}" class="block hover:text-white transition cursor-pointer">Ubicaciones</a>
+
+                <a href="#"
+                   class="block bg-blue-600 hover:bg-blue-500 text-white text-center px-4 py-2 rounded-lg transition">
+                   Volver al Sitio Cliente
+                </a>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- MAIN (con fondo degradado) -->
+    <main class="flex-grow pt-28 pb-16 relative">
+
+        <!-- Fondo degradado solo en área del contenido -->
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-950 to-black opacity-95"></div>
+
+        <!-- Contenido real -->
+        <div class="relative z-10 container mx-auto">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-6 admin-footer">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+
+            <p class="text-gray-400 text-sm">
+                Panel Administrativo • <span class="text-blue-400 font-semibold">EventosPro</span>
+            </p>
+
+            <p class="text-gray-600 text-xs mt-1">
+                © {{ now|date:"Y" }} Todos los derechos reservados.
+            </p>
+
+            <div class="mt-4 mx-auto w-32 h-1 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 rounded-full opacity-60"></div>
+        </div>
+    </footer>
+
+    
+    <script>
+        // Botón móvil corregido: antes tenía mal el id
+        const btn = document.getElementById("menu-admin");
+        const menu = document.getElementById("admin-mobile-menu");
+
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
+        // Animaciones GSAP encapsuladas
+        gsap.from(".admin-navbar", { opacity: 0, y: -50, duration: 0.8, ease: "power2.out" });
+        gsap.from(".admin-footer", { opacity: 0, y: 20, duration: 0.8, delay: 0.3, ease: "power2.out" });
+    </script>
+
+    <!-- GSAP CDN -->
+    
+
+</body>
+
+</html>

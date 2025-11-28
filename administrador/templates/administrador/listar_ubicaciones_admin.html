@@ -1,0 +1,69 @@
+{% extends "administrador/admin_core.html" %}
+
+{% block content %}
+<!-- Contenedor principal animado -->
+<div class="admin-container">
+
+    <h1 class="text-2xl font-bold text-gray-200 mb-6">Ubicaciones</h1>
+
+    <!-- Botón para crear nueva ubicación -->
+    <div class="mb-4">
+        <a href="{% url 'administrador:crear_ubicacion_admin' %}" 
+           class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition">
+           Crear Nueva Ubicación
+        </a>
+    </div>
+
+    <!-- Div que encapsula la tabla para animación general -->
+    <div class="admin-table-wrapper bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg overflow-x-auto">
+
+        <table class="min-w-full divide-y divide-gray-800">
+            <thead>
+                <tr class="bg-gray-800/50">
+                    <th class="px-6 py-3">ID</th>
+                    <th class="px-6 py-3">Nombre</th>
+                    <th class="px-6 py-3">Dirección</th>
+                    <th class="px-6 py-3">Capacidad</th>
+                    <th class="px-6 py-3 text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in ubicaciones %}
+                <tr class="border-t border-gray-800 hover:bg-gray-800/60 transition">
+                    <td class="px-6 py-4 text-gray-400">{{ u.id }}</td>
+                    <td class="px-6 py-4 text-white font-semibold">{{ u.nombre }}</td>
+                    <td class="px-6 py-4 text-gray-400">{{ u.direccion }}</td>
+                    <td class="px-6 py-4 text-gray-400">{{ u.capacidad }}</td>
+                    <td class="px-6 py-4 text-center space-x-2">
+                        <a href="{% url 'administrador:editar_ubicacion_admin' u.id %}" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm">Editar</a>
+                        <a href="{% url 'administrador:eliminar_ubicacion_admin' u.id %}" class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm" onclick="return confirm('¿Eliminar esta ubicación?')">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-6 text-center text-gray-500">No hay ubicaciones registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- GSAP Animación del div completo -->
+<script>
+    gsap.from(".admin-table-wrapper", {
+        opacity: 0,
+        y: 30,
+        scale: 0.98,
+        duration: 0.8,
+        ease: "power2.out"
+    });
+
+    gsap.from("h1", {
+        opacity: 0,
+        y: -20,
+        duration: 0.7,
+        ease: "power2.out"
+    });
+</script>
+{% endblock %}

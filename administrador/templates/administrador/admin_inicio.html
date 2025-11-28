@@ -1,0 +1,63 @@
+{% extends "administrador/admin_core.html" %}
+
+{% block content %}
+<div class="dashboard-stats-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+
+    <!-- Tarjeta Ventas Realizadas -->
+    <div class="admin-card-wrapper">
+        <a href="{% url 'administrador:listar_compras_admin' %}" class="block">
+            <div class="admin-card-stats bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
+                <h3 class="text-gray-400 text-sm font-medium">Ventas Realizadas</h3>
+                <p class="text-4xl font-bold text-blue-400 mt-2">{{ entradas_vendidas }}</p>
+                <div class="mt-3 text-xs text-gray-500">Totales Historicos</div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Tarjeta Usuarios Registrados -->
+    <div class="admin-card-wrapper">
+        <a href="{% url 'administrador:listar_usuarios_admin' %}" class="block">
+            <div class="admin-card-stats bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer">
+                <h3 class="text-gray-400 text-sm font-medium">Usuarios Registrados</h3>
+                <p class="text-4xl font-bold text-purple-400 mt-2">{{ usuarios_totales }}</p>
+                <div class="mt-3 text-xs text-gray-500">En la plataforma</div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Tarjeta Eventos Activos -->
+    <div class="admin-card-wrapper">
+        <a href="{% url 'administrador:listar_eventos_admin' %}" class="block">
+            <div class="admin-card-stats bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-green-500/20 transition-all duration-300">
+                <h3 class="text-gray-400 text-sm font-medium">Eventos Activos</h3>
+                <p class="text-4xl font-bold text-green-400 mt-2">{{ eventos_activos }}</p>
+                <div class="mt-3 text-xs text-gray-500">Publicados actualmente</div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Tarjeta Eventos por Confirmar -->
+    <div class="admin-card-wrapper">
+        <a href="{% url 'administrador:listar_eventos_admin' %}" class="block">
+            <div class="admin-card-stats bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-yellow-500/20 transition-all duration-300">
+                <h3 class="text-gray-400 text-sm font-medium">Eventos por Confirmar</h3>
+                <p class="text-4xl font-bold text-yellow-400 mt-2">{{ eventos_pendientes }}</p>
+                <div class="mt-3 text-xs text-gray-500">Pendientes de revisión</div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<script>
+    // Animar cada tarjeta envuelta en su contenedor
+    gsap.from(".admin-card-wrapper", {
+        opacity: 0,
+        y: 30,
+        scale: 0.95,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power2.out"
+    });
+</script>
+{% endblock %}
