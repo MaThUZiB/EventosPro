@@ -6,6 +6,31 @@
 
     <h1 class="text-2xl font-bold text-gray-200 mb-6">Usuarios Registrados</h1>
 
+    <!-- HERO DE BÚSQUEDA -->
+    <div class="w-full flex justify-center mb-8">
+        <form method="GET" action="" class="w-full max-w-2xl flex flex-col sm:flex-row gap-4">
+
+            <!-- Input grande -->
+            <input type="text" name="q" placeholder="Buscar por nombre de usuario" value="{{ request.GET.q }}" class="flex-1 px-6 py-4 text-xl rounded-2xl bg-gray-800 border border-gray-700 text-gray-200 placeholder-gray-400
+                   focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-lg transition">
+
+            <div class="flex gap-3">
+                <!-- Botón Buscar -->
+                <button type="submit"
+                    class="px-6 py-4 text-xl rounded-2xl bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition">
+                    Buscar
+                </button>
+
+                <!-- Botón Mostrar todos -->
+                <a href="{% url 'administrador:listar_usuarios_admin' %}"
+                    class="px-6 py-4 text-xl rounded-2xl bg-gray-700 hover:bg-gray-600 text-white shadow-lg transition">
+                    Todos
+                </a>
+            </div>
+        </form>
+    </div>
+
+
     <!-- Div que encapsula la tabla para animación general -->
     <div class="admin-table-wrapper bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg">
 
@@ -23,7 +48,7 @@
 
             <tbody class="divide-y divide-gray-800">
                 {% for u in usuarios %}
-                <tr class="hover:bg-gray-800/40 transition">
+                <tr class="cursor-pointer hover:bg-gray-800/40 transition" data-url="{% url 'administrador:detalle_usuario' u.id %}">
                     <td class="px-4 py-3 text-gray-200">{{ u.username }}</td>
                     <td class="px-4 py-3 text-gray-300">{{ u.email }}</td>
                     <td class="px-4 py-3 text-gray-300">{{ u.rut }}</td>
@@ -38,10 +63,12 @@
                         </span>
                     </td>
                     <td class="px-4 py-3 text-center space-x-3">
-                        <a href="{% url 'administrador:editar_usuario_admin' u.id %}" class="px-3 py-1 text-sm rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition">
+                        <a href="{% url 'administrador:editar_usuario_admin' u.id %}"
+                            class="px-3 py-1 text-sm rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition">
                             Editar
                         </a>
-                        <a href="{% url 'administrador:eliminar_usuario_admin' u.id %}" class="px-3 py-1 text-sm rounded-lg bg-red-600 hover:bg-red-500 text-white transition" onclick="return confirm('¿Estás seguro que deseas eliminar este usuario?');">
+                        <a href="{% url 'administrador:eliminar_usuario_admin' u.id %}"
+                            class="px-3 py-1 text-sm rounded-lg bg-red-600 hover:bg-red-500 text-white transition">
                             Eliminar
                         </a>
                     </td>
@@ -55,7 +82,24 @@
         </table>
     </div>
 </div>
+<div class="admin-table-wrapper max-w-6xl mx-auto mt-8 grid grid-cols-1 justify-center">
 
+    <!-- Cantidad Total de Eventos -->
+    <div class="bg-gradient-to-r from-purple-700 to-purple-600
+                border border-purple-500/20
+                rounded-2xl p-6 shadow-lg flex items-center justify-between max-w-lg mx-auto gap-6">
+
+        <div>
+            <h2 class="text-lg font-bold text-white mb-1">Total Usuarios</h2>
+        </div>
+
+        <div class="text-right">
+            <p class="text-2xl font-extrabold text-white">
+                {{ usuarios.count }}
+            </p>
+        </div>
+    </div>
+</div>
 <!-- GSAP Animación del div completo -->
 <script>
     gsap.from(".admin-table-wrapper", {
@@ -72,5 +116,10 @@
         duration: 0.7,
         ease: "power2.out"
     });
+    document.querySelectorAll('tr[data-url]').forEach(row => {
+    row.addEventListener('click', () => {
+        window.location = row.dataset.url;
+    });
+});
 </script>
 {% endblock %}

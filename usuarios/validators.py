@@ -1,43 +1,38 @@
 import re
 from django.core.exceptions import ValidationError
 
-def validar_rut(rut):
-    """
-    Valida el RUT chileno (formato y dígito verificador).
-    Acepta formatos con puntos o guiones.
-    """
 
-    rut = rut.upper().replace(".", "").replace("-", "")
+def validar_rut(value):
+    import re
+    from django.core.exceptions import ValidationError
 
-    if not re.match(r'^\d+K?$', rut):
-        raise ValidationError("El formato del RUT es inválido.")
+    rut = value.upper().replace(".", "").replace("-", "")
+
+    if not re.match(r"^\d+[0-9K]$", rut):
+        raise ValidationError("Formato de RUT inválido.")
 
     cuerpo = rut[:-1]
     dv = rut[-1]
 
-    # Verificar que el cuerpo sea numérico
-    if not cuerpo.isdigit():
-        raise ValidationError("El cuerpo del RUT debe ser numérico.")
-
-    # --- Cálculo del dígito verificador ---
     suma = 0
-    multiplicador = 2
+    multiplo = 2
 
+    # Multiplicadores correctos: 2 → 3 → 4 → 5 → 6 → 7 → (vuelve a 2)
     for c in reversed(cuerpo):
-        suma += int(c) * multiplicador
-        multiplicador += 1
-        if multiplicador > 7:
-            multiplicador = 2
+        suma += int(c) * multiplo
+        multiplo = 2 if multiplo == 7 else multiplo + 1
 
-    resto = suma % 11
-    dv_calculado = 11 - resto
+    dv_calc = 11 - (suma % 11)
+    dv_calc = "0" if dv_calc == 11 else "K" if dv_calc == 10 else str(dv_calc)
 
-    if dv_calculado == 11:
-        dv_calculado = "0"
-    elif dv_calculado == 10:
-        dv_calculado = "K"
-    else:
-        dv_calculado = str(dv_calculado)
+    if dv != dv_calc:
+        raise ValidationError("RUT inválido (dígito verificador incorrecto).")
 
-    if dv != dv_calculado:
-        raise ValidationError("El dígito verificador del RUT es incorrecto.")
+
+def validar_telefono_chileno(value):
+    numero = value.replace(" ", "").replace("+", "")
+
+    if not re.match(r"^(56)?9\d{8}$", numero):
+        raise ValidationError(
+            "El número debe ser chileno, comenzar con +569 o 569 y tener 9 dígitos."
+        )

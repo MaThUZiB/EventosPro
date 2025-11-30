@@ -5,6 +5,7 @@ from django.contrib import messages
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse
+from eventos.models import Ubicacion ,Evento
 
 # Create your views here.
 @login_required
@@ -16,8 +17,12 @@ def mis_compras(request):
 def detalle_compra(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id, usuario=request.user)
     asientos = compra.asientos_nombres.split(",") if compra.asientos_nombres else []
-    
+    evento = compra.evento_id  # ya es una instancia de Evento o None si fue null
+    # Acceder a la ubicación desde el evento
+    ubicacion = evento.ubicacion if evento else None
     return render(request, "compra/detalle_compra.html", {
+        "ubicacion": ubicacion,
+        "evento": evento,
         "compra": compra,
         "asientos": [a.strip() for a in asientos],  # quitamos espacios extra
     })
@@ -109,3 +114,10 @@ def procesar_pago(request, compra_id):
 def confirmacion_compra(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id, usuario=request.user)
     return render(request, "compra/confirmacion_compra.html", {"compra": compra})
+
+
+def cancelar_compra(request, compra_id):
+    compra = get_object_or_404(Compra, id=compra_id)
+    compra.cancelar()  # 👉 llama a tu método personalizado
+    messages.success(request, "La compra fue cancelada correctamente.")
+    return redirect("compra:mis_compras")

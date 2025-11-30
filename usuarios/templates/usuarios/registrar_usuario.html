@@ -45,12 +45,15 @@
                 {% endif %}
             </div>
 
-            <div class="flex flex-col">
-                <label for="telefono" class="block text-sm font-medium text-gray-300">Teléfono</label>
-                <input type="text" id="telefono" name="telefono" required
-                    value="{{ request.POST.telefono|default_if_none:'' }}"
-                    class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
+                <div class="flex flex-col">
+                    <label for="telefono" class="block text-sm font-medium text-gray-300">Teléfono</label>
+                    <input type="text" id="telefono" name="telefono" required
+                        value="{{ request.POST.telefono|default_if_none:'' }}"
+                        class="mt-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    {% if form.telefono.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.telefono.errors.0 }}</p>
+                    {% endif %}   
+                </div>
 
             <div class="flex flex-col">
                 <label for="password1" class="block text-sm font-medium text-gray-300">Contraseña</label>
@@ -80,6 +83,9 @@
                     <option value="cliente" {% if request.POST.tipo_usuario == 'cliente' %}selected{% endif %}>Cliente</option>
                     <option value="organizador" {% if request.POST.tipo_usuario == 'organizador' %}selected{% endif %}>Organizador</option>
                 </select>
+                {% if form.tipo_usuario.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.tipo_usuario.errors.0 }}</p>
+                {% endif %}
             </div>
 
             <!-- Botón a ancho completo -->

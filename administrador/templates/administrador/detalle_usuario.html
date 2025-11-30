@@ -1,0 +1,113 @@
+{% extends "administrador/admin_core.html" %}
+{% block content %}
+
+<section class="min-h-screen text-white py-12 px-6 flex items-center justify-center">
+
+    <div class="admin-table-wrapper bg-gray-900 border border-gray-800 rounded-2xl p-10 shadow-lg max-w-4xl w-full relative overflow-hidden">
+
+        <!-- Título usuario -->
+        <h1 class="text-3xl font-bold text-center text-blue-400 mb-6 drop-shadow-lg">
+            Usuario: {{ usuario.username }}
+        </h1>
+
+        <!-- Datos generales -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 text-gray-200">
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Nombre</h3>
+                <p class="text-white font-semibold">{{ usuario.username }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Email</h3>
+                <p class="text-white">{{ usuario.email }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">RUT</h3>
+                <p class="text-white">{{ usuario.rut }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Teléfono</h3>
+                <p class="text-white">{{ usuario.telefono }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Tipo de usuario</h3>
+                <span class="px-3 py-1 text-xs rounded-full 
+                    {% if usuario.tipo_usuario == 'administrador' %} bg-blue-600 text-white
+                    {% elif usuario.tipo_usuario == 'organizador' %} bg-purple-600 text-white
+                    {% else %} bg-green-600 text-white
+                    {% endif %}">
+                    {{ usuario.tipo_usuario|title }}
+                </span>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Fecha de registro</h3>
+                <p class="text-white">{{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Último login</h3>
+                <p class="text-white">{{ usuario.last_login|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+
+        <!-- Compras asociadas -->
+        <h2 class="text-xl font-semibold text-white mb-3">Compras realizadas</h2>
+        <div class="overflow-x-auto mb-6">
+            <table class="min-w-full bg-gray-800 rounded-xl overflow-hidden">
+                <thead class="bg-gray-700 text-gray-300 text-left">
+                    <tr>
+                        <th class="px-6 py-3">ID Compra</th>
+                        <th class="px-6 py-3">Evento</th>
+                        <th class="px-6 py-3">Total</th>
+                        <th class="px-6 py-3">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for compra in usuario.compras.all %}
+                    <tr class="border-t border-gray-700 hover:bg-gray-700/50 transition cursor-pointer"
+                        onclick="window.location.href='{% url 'administrador:ver_compra_admin' compra.id %}'">
+                        <td class="px-6 py-3 text-white">{{ compra.id }}</td>
+                        <td class="px-6 py-3 text-gray-300">{{ compra.evento.nombre }}</td>
+                        <td class="px-6 py-3 text-gray-300">${{ compra.total }}</td>
+                        <td class="px-6 py-3 text-gray-300">{{ compra.fecha|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                            Este usuario no ha realizado compras.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Botón volver -->
+        <div class="text-">
+            <a href="{% url 'administrador:listar_usuarios_admin' %}"
+               class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
+                Volver
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- GSAP Animación -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+    gsap.from(".admin-table-wrapper", {
+        opacity: 0,
+        y: 30,
+        scale: 0.98,
+        duration: 0.8,
+        ease: "power2.out"
+    });
+
+    gsap.from("h1", {
+        opacity: 0,
+        y: -20,
+        duration: 0.7,
+        ease: "power2.out"
+    });
+</script>
+
+{% endblock %}

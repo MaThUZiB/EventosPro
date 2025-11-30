@@ -10,6 +10,13 @@
         <h1 class="text-4xl font-bold mb-8 text-center text-white tracking-wide">
             Crear Nuevo Evento
         </h1>
+        {% if form.non_field_errors %}
+        <div class="bg-red-900/40 border border-red-700 text-red-300 p-3 rounded mb-4">
+            {% for error in form.non_field_errors %}
+            <p class="text-red-500 text-sm mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <form method="POST" enctype="multipart/form-data" id="evento-form"
             class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -23,13 +30,16 @@
                 </label>
                 {{ field }}
                 {% if field.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+                <p class="text-red-500 text-sm mt-1">{{ field.errors.as_text }}</p>
                 {% endif %}
             </div>
             {% endif %}
             {% endfor %}
 
             <!-- Selector de Horas -->
+            {% if form.hora.errors %}
+            <p class="text-red-500 text-sm mt-2">{{ form.hora.errors.as_text }}</p>
+            {% endif %}
             <div class="col-span-1 md:col-span-2">
                 <label class="block text-gray-200 font-medium mb-3">Selecciona una hora disponible</label>
                 <input type="hidden" name="hora" id="id_hora">
@@ -43,6 +53,8 @@
             </div>
 
             <div class="col-span-full">
+                
+
                 <button type="submit"
                     class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition duration-200">
                     Crear Evento
@@ -100,6 +112,24 @@
                 fechaInput.setAttribute("min", hoy);
             }
         });
+        // Si la página se recarga y ya hay una ubicación seleccionada, cargar su info
+        if (selectUbicacion && selectUbicacion.value) {
+            const data = ubicacionesData.find(u => u.id == selectUbicacion.value);
+
+            if (data) {
+                img.src = data.imagen || "";
+                nombre.textContent = data.nombre;
+                direccion.textContent = data.direccion ? "📍 " + data.direccion : "";
+                capacidad.textContent = "Capacidad: " + data.capacidad + " personas";
+                img.classList.toggle("hidden", !data.imagen);
+                ubicacionInfo.classList.remove("hidden");
+            }
+
+            // Si también hay fecha seleccionada, volver a cargar las horas disponibles
+            if (fechaInput && fechaInput.value) {
+                cargarHoras();
+            }
+        }
 
         // Mostrar info de ubicación seleccionada
         selectUbicacion?.addEventListener("change", () => {

@@ -1,0 +1,74 @@
+{% extends "administrador/admin_core.html" %}
+{% block content %}
+
+<section class="min-h-screen text-white py-12 px-6 flex items-center justify-center">
+
+    <div class="admin-table-wrapper bg-gray-900 border border-gray-800 rounded-2xl p-10 shadow-lg max-w-4xl w-full relative overflow-hidden">
+
+        <!-- Título de la ubicación -->
+        <h1 class="text-3xl font-bold text-center text-green-400 mb-6 drop-shadow-lg">
+            Ubicación: {{ ubicacion.nombre }}
+        </h1>
+
+        <!-- Imagen de la ubicación -->
+        {% if ubicacion.imagen %}
+        <div class="mb-6">
+            <img src="{{ ubicacion.imagen.url }}" alt="{{ ubicacion.nombre }}" class="w-full rounded-2xl shadow-lg object-cover max-h-64">
+        </div>
+        {% endif %}
+
+        <!-- Datos generales -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 text-gray-200">
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Nombre</h3>
+                <p class="text-white font-semibold">{{ ubicacion.nombre }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Dirección</h3>
+                <p class="text-white">{{ ubicacion.direccion }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Filas</h3>
+                <p class="text-white">{{ ubicacion.filas }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Columnas</h3>
+                <p class="text-white">{{ ubicacion.columnas }}</p>
+            </div>
+            <div>
+                <h3 class="text-gray-400 text-sm font-medium">Capacidad</h3>
+                <p class="text-white font-semibold">{{ capacidad }}</p>
+            </div>
+        </div>
+
+        <!-- Botón volver -->
+        <div class="text-center">
+            <a href="{% url 'administrador:listar_ubicaciones_admin' %}" 
+               class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition">
+                Volver
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- GSAP Animación -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+    gsap.from(".admin-table-wrapper", {
+        opacity: 0,
+        y: 30,
+        scale: 0.98,
+        duration: 0.8,
+        ease: "power2.out"
+    });
+
+    gsap.from("h1", {
+        opacity: 0,
+        y: -20,
+        duration: 0.7,
+        ease: "power2.out"
+    });
+</script>
+
+{% endblock %}

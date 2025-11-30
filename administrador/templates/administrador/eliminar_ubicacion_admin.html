@@ -3,9 +3,15 @@
 {% block content %}
 <div class="max-w-lg mx-auto mt-20 bg-gray-900 p-6 rounded-xl border border-gray-800 text-center">
     <h1 class="text-2xl font-bold text-gray-200 mb-4">Eliminar Ubicación</h1>
-    <p class="text-gray-300 mb-6">
-        ¿Estás seguro que deseas eliminar la ubicación <span class="font-semibold text-white">{{ ubicacion.nombre }}</span>?
-    </p>
+    
+    {% if error %}
+        <p class="text-red-500 font-semibold mb-4">{{ error }}</p>
+    {% else %}
+        <p class="text-gray-300 mb-6">
+            ¿Estás seguro que deseas eliminar la ubicación 
+            <span class="font-semibold text-white">{{ ubicacion.nombre }}</span>?
+        </p>
+    {% endif %}
 
     <form method="POST">
         {% csrf_token %}

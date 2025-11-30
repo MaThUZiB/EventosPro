@@ -5,6 +5,7 @@ from .views import *
 app_name = 'compra'
 
 urlpatterns = [
+    path('cancelar_compra/<int:compra_id>/', views.cancelar_compra, name='cancelar_compra'),
     path('mis-compras/', views.mis_compras, name='mis_compras'),
     path('detalle/<int:compra_id>/', views.detalle_compra, name='detalle_compra'),
     path('descargar-entrada/<int:compra_id>/', views.descargar_entrada, name='descargar_entrada'),

@@ -8,6 +8,9 @@ HOUR_CHOICES = [(f"{h:02d}:00", f"{h:02d}:00") for h in range(8, 23)]
 
 class EventoForm(forms.ModelForm):
     hora = forms.ChoiceField(
+        error_messages={
+            "required": "Por favor, selecciona una hora para el evento.",
+        },
         choices=HOUR_CHOICES,
         widget=forms.Select(
             attrs={
@@ -36,12 +39,13 @@ class EventoForm(forms.ModelForm):
             ),
             "descripcion": forms.Textarea(
                 attrs={
-                    "placeholder": "Descripción del evento",
+                    "placeholder": "Descripción del evento (opcional)",
                     "rows": 4,
                     "class": "w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none",
                 }
             ),
             "fecha": forms.DateInput(
+                format="%Y-%m-%d",
                 attrs={
                     "type": "date",
                     "class": "w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
@@ -66,6 +70,17 @@ class EventoForm(forms.ModelForm):
             ),
         }
 
+    def clean_precio_ticket(self):
+        precio = self.cleaned_data.get("precio_ticket")
+        if precio is None:
+            raise forms.ValidationError("Debes ingresar un precio.")
+        if precio <= 0:
+            raise forms.ValidationError("El precio debe ser mayor a 0.")
+        if precio > 1000000:
+            raise forms.ValidationError("El precio no puede superar 1 millón.")
+
+        return precio
+    
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
         if fecha < timezone.localdate():

@@ -1,9 +1,11 @@
 from django.db import models
 from usuarios.models import Usuario
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 class Ubicacion(models.Model):
     nombre = models.CharField(max_length=50)
-    direccion = models.CharField(max_length=50, blank=True)
+    direccion = models.CharField(max_length=50, blank=False)
     filas = models.PositiveIntegerField()
     columnas = models.PositiveIntegerField()
     imagen = models.ImageField(upload_to='ubicaciones/', blank=True, null=True)
@@ -21,10 +23,10 @@ class Evento(models.Model):
         ('cancelado', 'Cancelado'),
     ]
 
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='eventos')
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True, related_name='eventos')
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.PROTECT, related_name='eventos')
-    nombre = models.CharField(max_length=200)
-    descripcion = models.TextField(blank=True)
+    nombre = models.CharField(max_length=80)
+    descripcion = models.TextField(max_length=200, blank=True)
     fecha = models.DateField()
     hora = models.TimeField()
     imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
@@ -35,7 +37,7 @@ class Evento(models.Model):
             return self.nombre
     
     def clean(self):
-        from django.core.exceptions import ValidationError
+        super().clean()
         eventos_conflicto = Evento.objects.filter(
             ubicacion=self.ubicacion,
             fecha=self.fecha,
@@ -54,7 +56,7 @@ class AsientoEvento(models.Model):
 
     @property
     def nombre(self):
-        # Convierte fila 1 → A, 2 → B, etc.
+        # Convierte fila 1 → A, 2 → B, etc.s
         letra_fila = chr(64 + self.fila)  # 65 es 'A' en ASCII
         return f"{letra_fila}{self.columna}"
 

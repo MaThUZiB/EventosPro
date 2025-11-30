@@ -6,7 +6,7 @@ from usuarios.validators import validar_rut
 class Usuario(AbstractUser):
     rut = models.CharField(max_length=12, unique=True, validators=[validar_rut])
     telefono = models.CharField(max_length=15, blank=True)
-    tipo_usuario = models.CharField(max_length=50, blank=True, choices=[
+    tipo_usuario = models.CharField(max_length=50, blank=False, choices=[
         ('administrador', 'Administrador'),
         ('cliente', 'Cliente'),
         ('organizador', 'Organizador'),

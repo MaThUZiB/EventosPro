@@ -3,21 +3,32 @@ from usuarios.models import Usuario
 from eventos.models import AsientoEvento ,Evento
 
 class Compra(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    ESTADO_COMPRA = [
+        ('completada', 'Completada'),
+        ('cancelada', 'Cancelada'),
+    ]
+    estado = models.CharField(max_length=20, choices=ESTADO_COMPRA, default='completada')
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True, related_name='compras')
     fecha = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=0)
     asientos_nombres = models.CharField(max_length=255, null=True, blank=True)
-    evento_id = models.PositiveIntegerField(null=True, blank=True)
+    evento_id = models.ForeignKey(Evento, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def cancelar(self):
+        # Liberar asientos
+        for detalle in self.detalles.all():
+            detalle.asiento.disponible = True
+            detalle.asiento.save()
+
+        self.estado = "cancelada"
+        self.save()
 
     @property
-    def evento(self):
+    def nombre_evento(self):
         if self.evento_id:
-            try:
-                return Evento.objects.get(id=self.evento_id)
-            except Evento.DoesNotExist:
-                return None
-        return None
-
+            return self.evento_id.nombre
+        return "Devolución / Evento eliminado"
+    
     def __str__(self):
         return f"Compra #{self.id} - {self.usuario.username}"
     
@@ -57,5 +68,5 @@ class CompraDetalle(models.Model):
         # ✅ Actualizar la compra con los asientos y el evento
         asientos = self.compra.detalles.values_list('nombre_asiento', flat=True)
         self.compra.asientos_nombres = ', '.join(asientos)
-        self.compra.evento_id = self.asiento.evento.id
+        self.compra.evento_id = self.asiento.evento
         self.compra.save()

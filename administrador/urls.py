@@ -4,6 +4,9 @@ from . import views
 app_name = 'administrador'
 
 urlpatterns = [
+    path("ubicaciones/<int:id>/", views.detalle_ubicacion, name="detalle_ubicacion"),
+    path("eventos/<int:id>/", views.detalle_evento, name="detalle_evento"),
+    path("usuarios/<int:id>/", views.detalle_usuario, name="detalle_usuario"),
     path('', views.admin_inicio, name='admin_inicio'),
     path("usuarios/", views.listar_usuarios_admin, name="listar_usuarios_admin"),
     path("usuarios/<int:user_id>/editar/", views.editar_usuario_admin, name="editar_usuario_admin"),

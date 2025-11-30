@@ -170,7 +170,7 @@ def mis_eventos(request):
     return render(request, "eventos/mis_eventos.html", {"eventos": eventos})
 
 
-# EDITAR Eventos
+# EDITAR Eventosw
 @login_required
 @user_passes_test(es_organizador)
 def editar_evento(request, id):

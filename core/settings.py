@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'compra',
     'eventos',
     'usuarios',
+    'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

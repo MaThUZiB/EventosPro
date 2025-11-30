@@ -12,24 +12,26 @@
                   bg-[length:10px_10px] animate-pulse-slow rounded-3xl"></div>
         </div>
 
-        <!-- 🧾 Datos generales -->
-        <h2 class="cc-title text-3xl font-bold mb-6 text-center text-blue-400 drop-shadow-lg relative z-10">Compra #{{ compra.id }}</h2>
+        <h2 class="cc-title text-3xl font-bold mb-6 text-center text-blue-400 drop-shadow-lg relative z-10">
+            Compra #{{ compra.id }}
+            <span>{{ compra.estado }}</span>
+        </h2>
 
         <div class="cc-meta space-y-2 mb-8 text-gray-200 text-center relative z-10">
-            <p><strong>Evento:</strong> <span class="text-white font-semibold">{{ compra.evento.nombre }}</span></p>
-            <p><strong>Ubicación:</strong> {{ compra.evento.ubicacion }}</p>
-            <p><strong>Fecha del evento:</strong> {{ compra.evento.fecha }}</p>
+            <p><strong>Evento:</strong> <span class="text-white font-semibold">{{ compra.evento_id.nombre }}</span></p>
+            <p><strong>Ubicación:</strong> {{ compra.evento_id.ubicacion }}</p>
+            <p><strong>Fecha del evento:</strong> {{ compra.evento_id.fecha }}</p>
             <p><strong>Total:</strong> <span class="text-green-400 font-bold">${{ compra.total }}</span></p>
             <p><strong>Método de pago:</strong> <span class="text-yellow-300">{{ compra.pago.metodo }} ({{ compra.pago.estado }})</span></p>
         </div>
 
-        <!-- 🖼️ Imagen del evento -->
-        {% if compra.evento.imagen %}
+        {% if compra.evento_id.imagen %}
         <div class="cc-img flex justify-center mb-8 relative z-10">
-            <img src="{{ compra.evento.imagen.url }}" alt="{{ compra.evento.nombre }}"
+            <img src="{{ compra.evento_id.imagen.url }}" alt="{{ compra.evento_id.nombre }}"
                 class="rounded-2xl shadow-xl w-full max-w-md border border-white/10 transition-transform duration-500 hover:scale-105 hover:rotate-1">
         </div>
         {% endif %}
+
 
         <!-- 🎟️ Asientos -->
         <div class="cc-asientos-box relative z-10">
@@ -51,14 +53,28 @@
 
         <!-- 🔙 Botones -->
         <div class="cc-buttons-box flex justify-center gap-4 mt-4 relative z-10">
+
+            <!-- Descargar -->
             <a href="{% url 'compra:descargar_entrada' compra.id %}"
                 class="bg-green-500/90 hover:bg-green-600/95 px-6 py-3 rounded-2xl font-semibold shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
                 📥 Descargar PDF
             </a>
+
+            <!-- Volver -->
             <a href="{% url 'compra:mis_compras' %}"
                 class="bg-gray-500/80 hover:bg-gray-600/90 px-6 py-3 rounded-2xl font-semibold shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
                 Volver
             </a>
+
+            <!-- ❌ Cancelar Compra -->
+            {% if compra.estado == 'completada' %}
+            <a href="{% url 'compra:cancelar_compra' compra.id %}"
+                onclick="return confirm('¿Seguro que deseas cancelar esta compra?');"
+                class="bg-red-500/90 hover:bg-red-600/95 px-6 py-3 rounded-2xl font-semibold shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl">
+                Cancelar Compra
+            </a>
+            {% endif %}
+
         </div>
 
     </div>
