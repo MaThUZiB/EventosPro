@@ -3,78 +3,104 @@
 
 <section class="min-h-screen text-white py-12 px-6 flex items-center justify-center">
 
-    <div class="admin-table-wrapper bg-gray-900 border border-gray-800 rounded-2xl p-10 shadow-lg max-w-4xl w-full relative overflow-hidden">
+    <div class="relative w-full max-w-4xl">
 
-        <!-- Título del evento -->
-        <h1 class="text-3xl font-bold text-center text-purple-400 mb-6 drop-shadow-lg">
-            Evento: {{ evento.nombre }}
-        </h1>
-
-        <!-- Imagen del evento -->
-        {% if evento.imagen %}
-        <div class="mb-6">
-            <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}" class="w-full rounded-2xl shadow-lg object-cover max-h-64">
+        {% if evento.ubicacion.imagen %}
+        <div class="absolute inset-0 rounded-2xl overflow-hidden">
+            <img src="{{ evento.ubicacion.imagen.url }}" class="w-full h-full object-cover opacity-70">
         </div>
         {% endif %}
 
-        <!-- Datos generales -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 text-gray-200">
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Descripción</h3>
-                <p class="text-white">{{ evento.descripcion|default:"Sin descripción" }}</p>
-            </div>
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Fecha</h3>
-                <p class="text-white">{{ evento.fecha|date:"d/m/Y" }}</p>
-            </div>
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Hora</h3>
-                <p class="text-white">{{ evento.hora|time:"H:i" }}</p>
-            </div>
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Precio Ticket</h3>
-                <p class="text-white">${{ evento.precio_ticket }}</p>
-            </div>
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Estado</h3>
-                <span class="px-3 py-1 text-xs rounded-full
-                    {% if evento.estado == 'pendiente' %} bg-yellow-600 text-white
-                    {% elif evento.estado == 'publicado' %} bg-green-600 text-white
-                    {% else %} bg-red-600 text-white
-                    {% endif %}">
-                    {{ evento.estado|title }}
-                </span>
-            </div>
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Ubicación</h3>
-                <p class="text-white font-semibold">{{ evento.ubicacion.nombre }}</p>
-            </div>
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Dirección</h3>
-                <p class="text-white">{{ evento.ubicacion.direccion }}</p>
-            </div>
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Capacidad</h3>
-                <p class="text-white">{{ evento.ubicacion.capacidad }}</p>
-            </div>
-            <div>
-                <h3 class="text-gray-400 text-sm font-medium">Creado por</h3>
-                <p class="text-white">{{ evento.usuario.username|default:"Desconocido" }}</p>
-            </div>
-        </div>
+        <!-- Capa oscura más suave -->
+        <div class="absolute inset-0 bg-black bg-opacity-30 rounded-2xl"></div>
 
-        <!-- Botón volver -->
-        <div class="text-center">
-            <a href="{% url 'administrador:listar_eventos_admin' %}" 
-               class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg transition">
-                Volver
-            </a>
-        </div>
 
+        <!-- Contenedor principal -->
+        <div
+            class="relative admin-table-wrapper bg-gray-400 bg-opacity-10 border border-gray-800 rounded-2xl p-10 shadow-2xl">
+
+            <!-- Título -->
+            <h1 class="text-3xl font-bold text-center text-purple-400 mb-6 drop-shadow-lg">
+                Evento: {{ evento.nombre }}
+            </h1>
+
+            <!-- Imagen del evento -->
+            {% if evento.imagen %}
+            <div class="mb-6">
+                <img src="{{ evento.imagen.url }}" alt="{{ evento.nombre }}"
+                    class="w-full rounded-2xl shadow-xl object-cover max-h-64 border border-gray-700">
+            </div>
+            {% endif %}
+
+            <!-- Datos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 text-gray-200">
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Descripción</h3>
+                    <p>{{ evento.descripcion|default:"Sin descripción" }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Fecha</h3>
+                    <p>{{ evento.fecha|date:"d/m/Y" }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Hora</h3>
+                    <p>{{ evento.hora|time:"H:i" }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Precio Ticket</h3>
+                    <p>${{ evento.precio_ticket }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Estado</h3>
+                    <span class="px-3 py-1 text-xs rounded-full
+                        {% if evento.estado == 'pendiente' %} bg-yellow-600
+                        {% elif evento.estado == 'publicado' %} bg-green-600
+                        {% else %} bg-red-600
+                        {% endif %}">
+                        {{ evento.estado|title }}
+                    </span>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Ubicación</h3>
+                    <p class="font-semibold">{{ evento.ubicacion.nombre }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Dirección</h3>
+                    <p>{{ evento.ubicacion.direccion }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Capacidad</h3>
+                    <p>{{ evento.ubicacion.capacidad }}</p>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-400 text-sm font-medium">Creado por</h3>
+                    <p>{{ evento.usuario.username|default:"Desconocido" }}</p>
+                </div>
+
+            </div>
+
+            <!-- Botón -->
+            <div class="text-center">
+                <a href="{% url 'administrador:listar_eventos_admin' %}"
+                    class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg transition shadow-md">
+                    Volver
+                </a>
+            </div>
+
+        </div>
     </div>
+
 </section>
 
-<!-- GSAP Animación -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script>
     gsap.from(".admin-table-wrapper", {

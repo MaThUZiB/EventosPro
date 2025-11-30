@@ -209,6 +209,9 @@ def editar_evento(request, id):
 def eliminar_evento(request, id):
     evento = get_object_or_404(Evento, id=id, usuario=request.user)
     if request.method == "POST":
+        compras = Compra.objects.filter(evento_id=evento)
+        for compra in compras:
+            compra.cancelar()
         evento.delete()
         messages.success(request, "Evento eliminado correctamente.")
         return redirect("eventos:mis_eventos")

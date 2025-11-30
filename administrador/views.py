@@ -39,6 +39,18 @@ def listar_usuarios_admin(request):
         "usuarios": usuarios
     })
 
+def crear_usuario_admin(request):
+    if request.method == "POST":
+        form = UsuarioAdminForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Usuario creado correctamente.")
+            return redirect("administrador:listar_usuarios_admin")
+    else:
+        form = UsuarioAdminForm()
+
+    return render(request, "administrador/crear_usuario_admin.html", {"form": form})
+
 def editar_usuario_admin(request, user_id):
     usuario = get_object_or_404(Usuario, id=user_id)
     
@@ -52,13 +64,23 @@ def editar_usuario_admin(request, user_id):
         form = UsuarioAdminForm(instance=usuario)
 
     return render(request, "administrador/editar_usuario_admin.html", {"form": form, "usuario": usuario})
+def activar_usuario_admin(request, user_id):
+    usuario = get_object_or_404(Usuario, id=user_id)
 
+    if request.method == "POST":
+        usuario.is_active = True
+        usuario.save()
+        messages.success(request, "Usuario activado correctamente.")
+        return redirect("administrador:listar_usuarios_admin")
+
+    return render(request, "administrador/activar_usuario_admin.html", {"usuario": usuario})
 def eliminar_usuario_admin(request, user_id):
     usuario = get_object_or_404(Usuario, id=user_id)
 
     if request.method == "POST":
-        usuario.delete()
-        messages.success(request, "Usuario eliminado correctamente.")
+        usuario.is_active = False
+        usuario.save()
+        messages.success(request, "Usuario desactivado correctamente.")
         return redirect("administrador:listar_usuarios_admin")
 
     return render(request, "administrador/eliminar_usuario_admin.html", {"usuario": usuario})

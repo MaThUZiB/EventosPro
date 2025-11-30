@@ -64,6 +64,8 @@ class RegistroUsuarioForm(forms.ModelForm):
         if not tipo:
             raise forms.ValidationError("Debe seleccionar un tipo de usuario.")
         return tipo
+    
+    
 class InicioSesionForm(forms.Form):
     username = forms.CharField(max_length=150, label="Usuario")
     password = forms.CharField(widget=forms.PasswordInput(), label="Contraseña")
