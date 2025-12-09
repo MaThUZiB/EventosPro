@@ -1,6 +1,6 @@
 {% extends 'core.html' %}
 {% block content %}
-
+{% load humanize %}
 <section class="min-h-screen text-white py-12 px-6 flex items-center justify-center relative">
 
     <div
@@ -21,7 +21,7 @@
             <p><strong>Evento:</strong> <span class="text-white font-semibold">{{ compra.evento_id.nombre }}</span></p>
             <p><strong>Ubicación:</strong> {{ compra.evento_id.ubicacion }}</p>
             <p><strong>Fecha del evento:</strong> {{ compra.evento_id.fecha }}</p>
-            <p><strong>Total:</strong> <span class="text-green-400 font-bold">${{ compra.total }}</span></p>
+            <p><strong>Total:</strong> <span class="text-green-400 font-bold">${{ compra.total|intcomma }}</span></p>
             <p><strong>Método de pago:</strong> <span class="text-yellow-300">{{ compra.pago.metodo }} ({{ compra.pago.estado }})</span></p>
         </div>
 

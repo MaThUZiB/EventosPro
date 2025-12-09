@@ -5,7 +5,7 @@ from django.contrib import messages
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse
-from eventos.models import Ubicacion ,Evento
+from reportlab.lib.colors import black, HexColor
 
 # Create your views here.
 @login_required
@@ -27,6 +27,12 @@ def detalle_compra(request, compra_id):
         "asientos": [a.strip() for a in asientos],  # quitamos espacios extra
     })
 
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.colors import black, HexColor
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+
 def descargar_entrada(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id, usuario=request.user)
 
@@ -35,36 +41,74 @@ def descargar_entrada(request, compra_id):
 
     p = canvas.Canvas(response, pagesize=A4)
     width, height = A4
-    p.setFont("Helvetica-Bold", 18)
-    p.drawCentredString(width / 2, height - 80, "Entrada para evento")
-    p.setFont("Helvetica", 12)
-    y = height - 130
-    p.drawString(80, y, f"Compra ID: {compra.id}")
-    y -= 20
-    p.drawString(80, y, f"Evento: {compra.detalles.first().asiento.evento.nombre}")
-    y -= 20
-    p.drawString(80, y, f"Total pagado: ${compra.total}")
-    y -= 20
-    p.drawString(80, y, f"Email comprador: {request.user.username}")
-    y -= 30
-    p.drawString(80, y, f"Rut comprador: {request.user.rut}")
-    y -= 30
-    p.drawString(80, y, f"Email comprador: {request.user.email}")
-    y -= 30
 
-    p.setFont("Helvetica-Bold", 13)
-    p.drawString(80, y, "Asientos:")
+    # ======= ESTILO GENERAL =======
+    margen_x = 70
+    y = height - 80
+
+    # Encabezado
+    p.setFont("Helvetica-Bold", 22)
+    p.setFillColor(HexColor("#2c3e50"))
+    p.drawCentredString(width / 2, y, "🎟 Entrada de Evento")
+
+    # Línea decorativa
+    y -= 20
+    p.setStrokeColor(HexColor("#2c3e50"))
+    p.setLineWidth(2)
+    p.line(margen_x, y, width - margen_x, y)
+
+    # ======= DATOS COMPRA =======
+    y -= 40
+    p.setFillColor(black)
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(margen_x, y, "Datos de la compra:")
+
+    p.setFont("Helvetica", 12)
+    y -= 25
+    p.drawString(margen_x, y, f"ID de compra: {compra.id}")
+    y -= 18
+    p.drawString(margen_x, y, f"Estado: {compra.estado}")
+    y -= 18
+
+    evento = compra.detalles.first().asiento.evento
+    p.drawString(margen_x, y, f"Evento: {evento.nombre}")
+    y -= 18
+    p.drawString(margen_x, y, f"Total pagado: ${compra.total}")
+
+    # ======= DATOS USUARIO =======
+    y -= 35
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(margen_x, y, "Datos del comprador:")
+
+    y -= 25
+    p.setFont("Helvetica", 12)
+    p.drawString(margen_x, y, f"Usuario: {request.user.username}")
+    y -= 18
+    p.drawString(margen_x, y, f"Email: {request.user.email}")
+    y -= 18
+    p.drawString(margen_x, y, f"RUT: {request.user.rut}")
+
+    # ======= ASIENTOS =======
+    y -= 35
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(margen_x, y, "Asientos:")
+
     y -= 20
     p.setFont("Helvetica", 12)
+
     for detalle in compra.detalles.all():
-        p.drawString(100, y, f"• {detalle.nombre_asiento}")
-        y -= 18
+        p.drawString(margen_x + 20, y, f"• {detalle.nombre_asiento}")
+        y -= 15
+        if y < 80:  # salto de página automático
+            p.showPage()
+            y = height - 80
 
-    y -= 20
-    p.setFont("Helvetica-Oblique", 11)
-    p.drawString(80, y, f"Método de pago: {compra.pago.metodo}")
+    # ======= MÉTODO DE PAGO =======
+    y -= 30
+    p.setFont("Helvetica-Oblique", 12)
+    p.drawString(margen_x, y, f"Método de pago: {compra.pago.metodo}")
 
-    # Finalizar
+    # ======= FINAL =======
     p.showPage()
     p.save()
 
